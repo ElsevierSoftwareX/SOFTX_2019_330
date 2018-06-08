@@ -14,8 +14,8 @@ Authors@R: c(
 License: GPL-3
 Description: A collection of feature selection filters performing greedy optimisation of mutual information-based usefulness criteria, inspired by the overview by Brown, Pocock, Zhao and Lujan (2012) <http://www.jmlr.org/papers/v13/brown12a.html>.
  Implements, among other, minimum redundancy maximal relevancy ('mRMR') method by Peng, Long and Ding (2005) <doi:10.1109/TPAMI.2005.159>; joint mutual information ('JMI') method by Yang and Moody (1999) <http://papers.nips.cc/paper/1779-data-visualization-and-feature-selection-new-algorithms-for-nongaussian-data>; double input symmetrical relevance ('DISR') method by Meyer and Bontempi  (2006) <doi:10.1007/11732242_9> as well as joint mutual information maximisation ('JMIM') method by Bennasar, Hicks and Setchi (2015) <doi:10.1016/j.eswa.2015.07.007>.
-BugReports: https://github.com/mbq/praznik/issues
-URL: https://github.com/mbq/praznik
+BugReports: https://notabug.org/mbq/praznik/issues
+URL: https://notabug.org/mbq/praznik
 RoxygenNote: 6.0.1.9000
 Suggests: testthat
 Encoding: UTF-8
