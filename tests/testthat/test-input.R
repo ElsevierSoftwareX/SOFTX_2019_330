@@ -24,6 +24,10 @@ test_that("X must be a data.frame is thrown",{
  expect_error(MIM(list(1:3),NULL,NULL),"X must be a data.frame")
 })
 
+test_that("No rows error is thrown",{
+ expect_error(MIM(iris[0,-5],iris[0,5]),"X has no rows")
+})
+
 test_that("Nameless data.frames work",{
  z<-iris[,-5]
  names(z)<-NULL
