@@ -72,8 +72,8 @@ In a present version, praznik includes \code{\link{impScores}} for generating va
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/mbq/praznik}
-  \item Report bugs at \url{https://github.com/mbq/praznik/issues}
+  \item \url{https://notabug.org/mbq/praznik}
+  \item Report bugs at \url{https://notabug.org/mbq/praznik/issues}
 }
 
 }

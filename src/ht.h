@@ -98,7 +98,7 @@ uint32_t static inline fillHtOne(struct ht *Q,int N,int *in,int *out,int mixOff)
  for(int e=0;e<N;e++){
   if(in[e]==NA_INTEGER) error("NA values are not allowed");
   uint64_t _ab=(uint64_t)(in[e]);
-  uint32_t hab=_ab%N;//TOOD: Better hash?
+  uint32_t hab=_ab%N;//TODO: Better hash?
 
   struct hte **E;
   for(E=Q->map+hab;E[0] && E[0]->ab!=_ab;E=&(E[0]->nxt));
@@ -114,6 +114,27 @@ uint32_t static inline fillHtOne(struct ht *Q,int N,int *in,int *out,int mixOff)
  return(nAB);
 }
 
+uint32_t static inline fillHtOneCounting(struct ht *Q,int N,int *in){
+ uint32_t nAB=0;
+ for(int e=0;e<N;e++) Q->map[e]=NULL;
+ //TODO: Ht is likely not needed here
+ for(int e=0;e<N;e++){
+  uint64_t _ab=(uint64_t)(in[e]);
+  uint32_t hab=_ab%N;//TODO: Better hash?
+
+  struct hte **E;
+  for(E=Q->map+hab;(*E)&&(*E)->ab!=_ab;E=&((*E)->nxt));
+
+  if(!*E){
+   Q->cnt[nAB].ab=_ab;
+   Q->cnt[nAB].nxt=NULL;
+   Q->cnt[nAB].c=1;
+   *E=Q->cnt+nAB;
+   nAB++;
+  }else (*E)->c++;
+ }
+ return(Q->nAB=nAB);
+}
 
 double miHt(struct ht *Q,int *cA,int *cB){
  double ans=0.,N=Q->N;
@@ -138,6 +159,16 @@ double nmiHt(struct ht *Q,int *cA,int *cB){
   H+=-cAB*log(cAB/N);
  }
  return(I/H);
+}
+
+double hHt(struct ht *Q){
+ double H=0.,N=Q->N;
+ for(int e=0;e<Q->nAB;e++){
+  if(!(Q->cnt[e].c)) continue;
+  double cAB=Q->cnt[e].c;
+  H+=-cAB*log(cAB/N);
+ }
+ return(H/N);
 }
 
 //Impurity is calculated in two parts,
