@@ -61,10 +61,11 @@ int *convertSEXP(struct ht *ht,int n,SEXP in,int *nout){
 
 void prepareInput(SEXP X,SEXP Y,SEXP K,SEXP Threads,struct ht ***ht,int *n,int *m,int *k,int **y,int *ny,int ***x,int **nx,int *nt){
  if(!isFrame(X)) error("X must be a data.frame");
- *n=length(Y);
  *m=length(X);
  if(*m==0) error("Cannot select from a data.frame without columns");
- if(*n!=length(VECTOR_ELT(X,0))) error("X and Y size mismatch");
+ *n=length(VECTOR_ELT(X,0));
+ if(*n==0) error("X has no rows");
+ if(y && *n!=length(Y)) error("X and Y size mismatch");
 
  if(k){
   //When k is NULL, don't even look at K -- useful for routines which does 
@@ -88,8 +89,10 @@ void prepareInput(SEXP X,SEXP Y,SEXP K,SEXP Threads,struct ht ***ht,int *n,int *
  for(int e=0;e<*nt;e++)
   (*ht)[e]=R_allocHt(*n);
 
- *y=convertSEXP(**ht,*n,Y,ny);
- if(!*y) error("Wrong Y type");
+ if(y){
+  *y=convertSEXP(**ht,*n,Y,ny);
+  if(!*y) error("Wrong Y type");
+ }
  
  *nx=(int*)R_alloc(sizeof(int),*m);
  *x=(int**)R_alloc(sizeof(int*),*m);

@@ -40,6 +40,7 @@
 #include "mi.h"
 #include "cmi.h"
 #include "im.h"
+#include "h.h"
 
 //Auxiliary
 
@@ -62,6 +63,7 @@ static const R_CallMethodDef R_CallDef[]={
  CALLDEF(C_mi,3),
  CALLDEF(C_cmi_jmi,5),
  CALLDEF(C_im,3),
+ CALLDEF(C_h,2),
  CALLDEF(C_JIM,4),
  {NULL,NULL,0}
 };

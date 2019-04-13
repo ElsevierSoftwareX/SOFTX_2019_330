@@ -41,6 +41,13 @@ test_that("cmi behaves properly",{
  )
 })
 
+test_that("h behves properly",{
+ expect_equal(
+  hScores(X),
+  apply(X,2,entro)
+ )
+})
+
 test_that("jmi behaves properly",{
  Z<-factor((1:150)%%7)
  expect_equal(

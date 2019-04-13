@@ -65,3 +65,16 @@ njmiScores<-function(X,Y,Z,threads=0)
 #' @export
 impScores<-function(X,Y,threads=0)
  .Call(C_im,X,Y,as.integer(threads))
+
+#' Calculate entropy of all features
+#'
+#' Calculates entropy of attribute, that is
+#' \deqn{H(X).}
+#' @template input
+#' @return A numerical vector with entropy scores, with names copied from \code{X}.
+#' @examples
+#' hScores(iris[,-5])
+#' @export
+hScores<-function(X,threads=0)
+ .Call(C_h,X,as.integer(threads))
+
