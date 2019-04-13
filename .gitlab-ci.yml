@@ -10,7 +10,7 @@ r-base-basic:
     - R -e "devtools::document()"
     - R -e "devtools::build('.','.')"
     - R -e "devtools::test()"
-    - R -e "devtools::codecov()"
+    - R -e "covr::codecov()"
   artifacts:
     paths:
       - man/
