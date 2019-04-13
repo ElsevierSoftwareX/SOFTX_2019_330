@@ -1,0 +1,8 @@
+stages:
+  - build
+
+r-base:
+  stage: build
+  image: rwercker/base
+  script:
+    - R -e "devtools::test()"
