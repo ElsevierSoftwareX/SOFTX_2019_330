@@ -5,6 +5,7 @@
 #' Calculates mutual information between each attribute and the decision, that is
 #' \deqn{I(X,Y).}
 #' @template input
+#' @template y
 #' @return A numerical vector with mutual information scores, with names copied from \code{X}.
 #' @examples
 #' miScores(iris[,-5],iris$Species)
@@ -17,6 +18,7 @@ miScores<-function(X,Y,threads=0)
 #' Calculates mutual information between each attributes and the decision, that is
 #' \deqn{I(X,Y|Z).}
 #' @template input
+#' @template y
 #' @param Z Condition; should be given as a factor, but other options are accepted, as for attributes. 
 #' @return A numerical vector with conditional mutual information scores, with names copied from \code{X}.
 #' @examples
@@ -32,6 +34,7 @@ cmiScores<-function(X,Y,Z,threads=0)
 #' This is the same as conditional mutual information between X and Y plus a constant that depends on Y and Z, that is
 #' \deqn{I(X,Z;Y)=I(X;Y|Z)+I(Y;Z).}
 #' @template input
+#' @template y
 #' @param Z Other vector; should be given as a factor, but other options are accepted, as for attributes. 
 #' @return A numerical vector with joint mutual information scores, with names copied from \code{X}.
 #' @examples
@@ -46,6 +49,7 @@ jmiScores<-function(X,Y,Z,threads=0)
 #' \deqn{\frac{I(X,Z;Y)}{H(X,Y,Z)}.}
 #' This is the same as in the criterion used by \code{\link{DISR}} and \code{\link{NJMIM}}.
 #' @template input
+#' @template y
 #' @param Z Other vector; should be given as a factor, but other options are accepted, as for attributes. 
 #' @return A numerical vector with the normalised joint mutual information scores, with names copied from \code{X}.
 #' @examples
@@ -59,6 +63,7 @@ njmiScores<-function(X,Y,Z,threads=0)
 #' Calculates Gini impurity between each attribute and the decision, that is
 #' \deqn{G(X;Y)=\sum_{xy} \frac{p_{xy}^2}{p_x}-\sum_y p_y^2.}
 #' @template input
+#' @template y
 #' @return A numerical vector with Gini impurity scores, with names copied from \code{X}.
 #' @examples
 #' impScores(iris[,-5],iris$Species)
@@ -68,7 +73,7 @@ impScores<-function(X,Y,threads=0)
 
 #' Calculate entropy of all features
 #'
-#' Calculates entropy of attribute, that is
+#' Calculates entropy of each attribute, that is
 #' \deqn{H(X).}
 #' @template input
 #' @return A numerical vector with entropy scores, with names copied from \code{X}.

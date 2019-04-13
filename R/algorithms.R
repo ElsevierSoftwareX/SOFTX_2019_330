@@ -4,6 +4,7 @@
 #'
 #' Calculates mutual information between all attributes and the decision, then returns top k.
 #' @template input
+#' @template y
 #' @template k
 #' @template output-mim
 #' @examples data(MadelonD)
@@ -22,6 +23,7 @@ MIM<-function(X,Y,k=3,threads=0)
 #' @references "Fast Binary Feature Selection using Conditional Mutual Information Maximisation" F. Fleuret, JMLR (2004)
 #' @references "Object recognition with informative features and linear classification" M. Vidal-Naquet and S. Ullman, IEEE Conference on Computer Vision and Pattern Recognition (2003).
 #' @template input
+#' @template y
 #' @template k
 #' @template output-mim
 #' @examples data(MadelonD)
@@ -38,6 +40,7 @@ CMIM<-function(X,Y,k=3,threads=0)
 #' where \eqn{S} is the set of already selected attributes.
 #' @references "Feature Selection Based on Mutual Information: Criteria of Max-Dependency, Max-Relevance, and Min-Redundancy" H. Peng et al. IEEE Pattern Analysis and Machine Intelligence (PAMI) (2005)
 #' @template input
+#' @template y
 #' @template k
 #' @template output
 #' @examples data(MadelonD)
@@ -55,6 +58,7 @@ MRMR<-function(X,Y,k=3,threads=0)
 #' @note \code{\link{DISR}} is a normalised version of JMI; \code{\link{JMIM}} and \code{\link{NJMIM}} are modifications of JMI and DISR in which minimal joint information over already selected attributes is used instead of a sum.
 #' @references "Data Visualization and Feature Selection: New Algorithms for Nongaussian Data H. Yang and J. Moody, NIPS (1999)
 #' @template input
+#' @template y
 #' @template k
 #' @template output
 #' @examples data(MadelonD)
@@ -72,6 +76,7 @@ JMI<-function(X,Y,k=3,threads=0)
 #' @note DISR is a normalised version of \code{\link{JMI}}; \code{\link{JMIM}} and \code{\link{NJMIM}} are modifications of JMI and DISR in which minimal joint information over already selected attributes is used instead of a sum.
 #' @references "On the Use of Variable Complementarity for Feature Selection in Cancer Classification" P. Meyer and G. Bontempi, (2006)
 #' @template input
+#' @template y
 #' @template k
 #' @template output
 #' @examples data(MadelonD)
@@ -88,6 +93,7 @@ DISR<-function(X,Y,k=3,threads=0)
 #' where \eqn{S} is the set of already selected attributes.
 #' @note \code{\link{NJMIM}} is a normalised version of JMIM; \code{\link{JMI}} and \code{\link{DISR}} are modifications of JMIM and NJMIM in which a sum of joint information over already selected attributes is used instead of a minimum.
 #' @template input
+#' @template y
 #' @template k
 #' @template output-mim
 #' @examples data(MadelonD)
@@ -106,6 +112,7 @@ JMIM<-function(X,Y,k=3,threads=0)
 #' @note NJMIM is a normalised version of \code{\link{JMIM}}; \code{\link{JMI}} and \code{\link{DISR}} are modifications of JMIM and NJMIM in which a sum of joint information over already selected attributes is used instead of a minimum.
 #' It stops returning features when the best score reaches 0.
 #' @template input
+#' @template y
 #' @template k
 #' @template output-mim
 #' @examples data(MadelonD)
@@ -125,6 +132,7 @@ NJMIM<-function(X,Y,k=3,threads=0)
 #' is the Gini impurity gain from partitioning \eqn{Y} according to \eqn{X}.
 #' @note This is an impurity-based version of \code{\link{JMI}}; expect similar results in slightly shorter time.
 #' @template input
+#' @template y
 #' @template k
 #' @template output
 #' @examples data(MadelonD)
