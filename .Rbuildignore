@@ -5,5 +5,4 @@ man-roxygen
 \.o$
 \.so$
 .md
-.travis.yml
-^appveyor\.yml$
+*.yml
