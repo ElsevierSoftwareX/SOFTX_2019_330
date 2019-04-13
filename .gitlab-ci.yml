@@ -10,11 +10,19 @@ r-base-build:
   script:
     - R -e "devtools::document()"
     - R -e "devtools::load_all()"
+    - R -e "devtools::build()"
+  artifacts:
+    paths:
+      - man/
+      - NAMESPACE
+      - ../praznik_*.tar.gz
 
 r-base-test:
   stage: test
+  script:
     - R -e "devtools::test()"
 
 r-base-cov:
-    stage: coverage
+  stage: coverage
+  script:
     - R -e "covr::codecov()"
