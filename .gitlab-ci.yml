@@ -1,10 +1,37 @@
-stages:
-  - build
+image: rwercker/base
 
-r-base:
-  stage: build
-  image: rwercker/base
+stages:
+  - basic
+  - check
+
+r-base-basic:
+  stage: basic
   script:
     - R -e "devtools::document()"
+    - R -e "devtools::build('.','.')"
     - R -e "devtools::test()"
     - R -e "covr::codecov()"
+  artifacts:
+    paths:
+      - man/
+      - NAMESPACE
+      - praznik_*.tar.gz
+
+r-base-check:
+  stage: check
+  script:
+    - R CMD check --no-manual --no-build-vignettes praznik_*.tar.gz
+  artifacts:
+    paths:
+      - praznik.Rcheck/
+
+r-dev-check:
+  stage: check
+  allow_failure: true
+  script:
+    - RD -e "install.packages('magrittr')"
+    - RD -e "install.packages('testthat')"
+    - RD CMD check --no-manual --no-build-vignettes praznik_*.tar.gz
+  artifacts:
+    paths:
+      - praznik.Rcheck/
