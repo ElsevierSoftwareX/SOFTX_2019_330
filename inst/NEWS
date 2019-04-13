@@ -1,3 +1,6 @@
+Changes in XX:
+ - Migration from GitHub to NotABug.
+
 Changes in 5.0:
  - JIM algorithm as an alternative version of JMI which
  is using Gini impurity instead of information gain.
