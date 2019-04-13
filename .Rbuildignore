@@ -5,4 +5,5 @@ man-roxygen
 \.o$
 \.so$
 .md
-*.yml
+.yml
+.tar.gz
