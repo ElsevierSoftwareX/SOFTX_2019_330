@@ -1,28 +1,37 @@
 image: rwercker/base
 
 stages:
-  - build
-  - test
-  - coverage
+  - basic
+  - check
 
-r-base-build:
+r-base-basic:
   stage: build
   script:
     - R -e "devtools::document()"
-    - R -e "devtools::load_all()"
-    - R -e "devtools::build()"
+    - R -e "devtools::build('.','.')"
+    - R -e "devtools::test()"
+    - R -e "devtools::codecov()"
   artifacts:
     paths:
       - man/
       - NAMESPACE
-      - ../praznik_*.tar.gz
+      - praznik_*.tar.gz
 
-r-base-test:
-  stage: test
+r-base-check:
+  stage: check
   script:
-    - R -e "devtools::test()"
+    - R CMD check --no-manual --no-build-vignettes praznik_*.tar.gz
+  artifacts:
+    paths:
+      - praznik.Rcheck/
 
-r-base-cov:
-  stage: coverage
+r-dev-check:
+  stage: check
+  before-script:
+    - RD -e "install.packages('magrittr')"
+    - RD -e "install.packages('testthat')"
   script:
-    - R -e "covr::codecov()"
+    - RD CMD check --no-manual --no-build-vignettes praznik_*.tar.gz
+  artifacts:
+    paths:
+      - praznik.Rcheck/
