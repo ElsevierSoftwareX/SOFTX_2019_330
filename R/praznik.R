@@ -78,18 +78,3 @@ NULL
 #' Features are in the same order as in the original data; the names of relevant ones start with \code{Rel}, while of irrelevant ones with \code{Irr}.
 #' @source \url{https://archive.ics.uci.edu/ml/datasets/Madelon}
 "MadelonD"
-
-# Utilities
-
-#' Control OpenMP thread count
-#'
-#' Does nothing, left to provide warnings to an old code.
-#' @param threads Ignored.
-#' @return Invisible \code{NULL}.
-#' @note Since praznik 4.0, please use \code{threads} argument of particular algorithm function to control how many threads it will use.
-#' @export
-setOmpThreads<-function(threads){
- warning("setOmpThreads() is deprecated and does nothing; please use the 'threads' argument!")
- invisible(NULL)
-}
- 
