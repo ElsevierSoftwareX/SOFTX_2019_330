@@ -1,10 +1,20 @@
+image: rwercker/base
+
 stages:
   - build
+  - test
+  - coverage
 
-r-base:
+r-base-build:
   stage: build
-  image: rwercker/base
   script:
     - R -e "devtools::document()"
+    - R -e "devtools::load_all()"
+
+r-base-test:
+  stage: test
     - R -e "devtools::test()"
+
+r-base-cov:
+    stage: coverage
     - R -e "covr::codecov()"
