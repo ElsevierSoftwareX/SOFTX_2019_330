@@ -13,7 +13,7 @@
 #' \deqn{J_{MIM}=I(X;Y).}
 #'
 #' The minimal conditional mutual information maximisation proposed by F. Fleauret, \code{\link{CMIM}}, uses
-#' \deqn{J_{CMIM}(X)=\min_{W\in S} I(X;Y|W);}
+#' \deqn{J_{CMIM}(X)=\min(I(X;Y),\min_{W\in S} I(X;Y|W));}
 #' this method is also effectively identical to the information fragments method.
 #' 
 #' The minimum redundancy maximal relevancy proposed by H. Peng et al., \code{\link{MRMR}}, uses

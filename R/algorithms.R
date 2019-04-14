@@ -17,7 +17,7 @@ MIM<-function(X,Y,k=3,threads=0)
 #'
 #' The method starts with an attribute of a maximal mutual information with the decision \eqn{Y}.
 #' Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
-#' \deqn{J(X)=\min_{W\in S} I(X;Y|W),}
+#' \deqn{J(X)=\min(I(X;Y),\min_{W\in S} I(X;Y|W)),}
 #' where \eqn{S} is the set of already selected attributes.
 #' @note CMIM is identical to the Informative Fragments (IF) method.
 #' @references "Fast Binary Feature Selection using Conditional Mutual Information Maximisation" F. Fleuret, JMLR (2004)

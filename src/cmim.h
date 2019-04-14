@@ -21,6 +21,9 @@ SEXP C_CMIM(SEXP X,SEXP Y,SEXP K,SEXP Threads){
  double *score; int *idx,ke=k;
  SEXP Ans; PROTECT(Ans=makeAns(k,&score,&idx));
  score[0]=bs; idx[0]=bi+1;
+
+ //Commented out according to Fleuret's paper
+ //for(int e=0;e<n;e++) ms[e]=INFINITY;
  
  #pragma omp parallel num_threads(nt)
  for(int e=1;e<ke;e++){
