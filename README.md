@@ -1,6 +1,7 @@
 # praznik 
 
-[![CRAN downloads](http://cranlogs.r-pkg.org/badges/praznik)](http://cran.rstudio.com/web/packages/praznik/index.html)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/praznik)](https://cran.rstudio.com/web/packages/praznik/index.html)
+[![CRAN version](https://www.r-pkg.org/badges/version/praznik?color=green)](https://cran.r-project.org/package=praznik)
 [![codecov](https://codecov.io/gl/mbq/praznik/branch/master/graph/badge.svg)](https://codecov.io/gl/mbq/praznik)
 [![pipeline status](https://gitlab.com/mbq/praznik/badges/master/pipeline.svg)](https://gitlab.com/mbq/praznik/commits/master)
 

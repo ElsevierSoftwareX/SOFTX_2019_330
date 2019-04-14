@@ -1,5 +1,7 @@
-Changes in XX:
- - Migration from GitHub to NotABug.
+Changes in 6.0:
+ - Migration from GitHub to GitLab.
+ - Fixed CMIM documentation and pure implementation to
+ be compatible with the paper.
 
 Changes in 5.0:
  - JIM algorithm as an alternative version of JMI which
