@@ -10,10 +10,37 @@ for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
  test_that(sprintf("Native %s works like pure %s",algo,algo),{
   do.call(sprintf("pure%s",algo),input)->pure
   do.call(algo,input)->native
-  expect_equal(pure$score,setNames(native$score,NULL))
-  expect_equal(pure$selection,names(native$selection))
+  expect_equal(pure,native)
  })
 }
+
+(function(){
+ input$X$const<-NULL
+ for(e in 1:5)
+  input$X[[sprintf("const_%s",e)]]<-factor(rep(17,150))
+ input$k<-10
+
+ for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
+  test_that(sprintf("Native %s works like pure %s with truncation",algo,algo),{
+   do.call(sprintf("pure%s",algo),input)->pure
+   do.call(algo,input)->native
+   expect_equal(pure,native)
+  })
+ }
+})()
+
+(function(){
+ input$X$spoiler<-factor(1:150)
+ input$k<-3
+
+ for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
+  test_that(sprintf("Native %s works like pure %s with spoiler",algo,algo),{
+   do.call(sprintf("pure%s",algo),input)->pure
+   do.call(algo,input)->native
+   expect_equal(pure,native)
+  })
+ }
+})()
 
 test_that("mi works like pure mi",{
  expect_equal(
@@ -41,7 +68,7 @@ test_that("cmi behaves properly",{
  )
 })
 
-test_that("h behves properly",{
+test_that("h behaves properly",{
  expect_equal(
   hScores(X),
   apply(X,2,entro)
