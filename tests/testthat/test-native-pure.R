@@ -14,33 +14,36 @@ for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
  })
 }
 
-(function(){
- input$X$const<-NULL
- for(e in 1:5)
-  input$X[[sprintf("const_%s",e)]]<-factor(rep(17,150))
- input$k<-10
 
- for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
-  test_that(sprintf("Native %s works like pure %s with truncation",algo,algo),{
-   do.call(sprintf("pure%s",algo),input)->pure
-   do.call(algo,input)->native
-   expect_equal(pure,native)
-  })
- }
-})()
+if(.Machine$sizeof.pointer==8){
+ (function(){
+  input$X$const<-NULL
+  for(e in 1:5)
+   input$X[[sprintf("const_%s",e)]]<-factor(rep(17,150))
+  input$k<-10
 
-(function(){
- input$X$spoiler<-factor(1:150)
- input$k<-3
+  for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
+   test_that(sprintf("Native %s works like pure %s with truncation",algo,algo),{
+    do.call(sprintf("pure%s",algo),input)->pure
+    do.call(algo,input)->native
+    expect_equal(pure,native)
+   })
+  }
+ })()
 
- for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
-  test_that(sprintf("Native %s works like pure %s with spoiler",algo,algo),{
-   do.call(sprintf("pure%s",algo),input)->pure
-   do.call(algo,input)->native
-   expect_equal(pure,native)
-  })
- }
-})()
+ (function(){
+  input$X$spoiler<-factor(1:150)
+  input$k<-3
+
+  for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
+   test_that(sprintf("Native %s works like pure %s with spoiler",algo,algo),{
+    do.call(sprintf("pure%s",algo),input)->pure
+    do.call(algo,input)->native
+    expect_equal(pure,native)
+   })
+  }
+ })()
+}
 
 test_that("mi works like pure mi",{
  expect_equal(
@@ -96,16 +99,16 @@ test_that("impurity scores agree with pure",{
  expect_equal(impScores(X,Y),pureImp(X,Y))
 })
 
-test_that("multithread tie breaking is stable",{
- if(.Machine$sizeof.pointer!=8)
-  skip("Due to numerical issues, this may be violated on 32-bit machines")
- mets<-c(MIM,JMIM,NJMIM,JMI,DISR,CMIM,MRMR,JIM)
- for(met in mets)
-  expect_equal(
-   met(iris[,rep(1:4,10)],iris$Species,threads=8),
-   met(iris[,rep(1:4,10)],iris$Species,threads=1)
-  )
-})
+if(.Machine$sizeof.pointer==8){
+ test_that("multithread tie breaking is stable",{
+  mets<-c(MIM,JMIM,NJMIM,JMI,DISR,CMIM,MRMR,JIM)
+  for(met in mets)
+   expect_equal(
+    met(iris[,rep(1:4,10)],iris$Species,threads=2),
+    met(iris[,rep(1:4,10)],iris$Species,threads=1)
+   )
+ })
+}
 
 test_that("JIM works",{
  data(MadelonD)
