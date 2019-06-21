@@ -1,3 +1,6 @@
+Changes in XX:
+ - Kendall transformation.
+
 Changes in 6.0:
  - Migration from GitHub to GitLab.
  - Fixed CMIM documentation and pure implementation to
