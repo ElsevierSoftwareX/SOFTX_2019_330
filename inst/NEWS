@@ -2,6 +2,9 @@ Changes in XX:
  - Kendall transformation.
 
 Changes in 6.0:
+ - Defunct setOmpThreads removed.
+ - Entropy scores function.
+ - Robust against degenerate data frames.
  - Migration from GitHub to GitLab.
  - Fixed CMIM documentation and pure implementation to
  be compatible with the paper.
