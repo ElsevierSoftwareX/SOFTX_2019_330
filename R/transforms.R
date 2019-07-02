@@ -12,7 +12,7 @@ kTransform<-function(x){
  
  #Prepare pairs
  mask<-expand.grid(a=1:length(x),b=1:length(x))
- mask[mask$a<mask$b,]->mask
+ mask[mask$a!=mask$b,]->mask
  xa<-x[mask$a]
  xb<-x[mask$b]
  
