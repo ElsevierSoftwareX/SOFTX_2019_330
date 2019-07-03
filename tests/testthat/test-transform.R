@@ -16,6 +16,11 @@ test_that("Kendall transform behaves properly",{
    "Only factors with two levels"
   )
 
+  expect_error(
+   kTransform("abc"),
+   "Unsupported"
+  )
+
   kTransform(1:n)->kn
   kTransform(n:1)->kr
   expect_identical(sort(kn),sort(kr))
