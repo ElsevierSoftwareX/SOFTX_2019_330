@@ -15,15 +15,14 @@ kTransform<-function(x){
  mask[mask$a!=mask$b,]->mask
  xa<-x[mask$a]
  xb<-x[mask$b]
- 
- if(is.numeric(x)||is.ordered(x))
-  return(factor(ifelse(xa>xb,'>',ifelse(xa<xb,'<','='))))
- 
- #TODO: This requires research
- factor(ifelse(xa==xb,'=','<>'))
- # or
- #factor(ifelse(xa==xb,sprintf("=%s",xa),'<>'))
- # or
- # factor(sprintf("%s_%s",xa,xb)) #TODO: buggy
 
+ if(is.factor(x))
+  if(length(levels(x))<3) 
+   return(kTransform(as.numeric(x))) else
+   stop("Only factors with two levels are currently supported")
+ 
+ if(is.numeric(x)||is.ordered(x)||is.logical(x))
+  return(factor(ifelse(xa>xb,'>',ifelse(xa<xb,'<','='))))
+
+ stop("Unsupported input")
 }

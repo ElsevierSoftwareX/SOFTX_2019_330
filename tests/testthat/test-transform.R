@@ -7,10 +7,14 @@ test_that("Kendall transform behaves properly",{
   expect_equal(tx,kTransform(x*2))
   expect_equal(length(tx),n*(n-1))
 
-  cx<-cut(x,3)
+  cx<-cut(x,2)
   kTransform(cx)->tcx
   expect_true(is.factor(tcx))
   expect_equal(length(tcx),n*(n-1))
+  expect_error(
+   kTransform(cut(x,3)),
+   "Only factors with two levels"
+  )
 
   kTransform(1:n)->kn
   kTransform(n:1)->kr
@@ -29,7 +33,7 @@ test_that("Kendall transform sanity test",{
 })
 
 test_that("Kendall works on data frames",{
- x<-iris
+ x<-iris[,-5]
  expect_equal(
   kTransform(x),
   data.frame(lapply(x,kTransform))
