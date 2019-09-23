@@ -13,6 +13,19 @@
 miScores<-function(X,Y,threads=0)
  .Call(C_mi,X,Y,as.integer(threads))
 
+#' Calculate mutual information between all feature pairs
+#'
+#' Calculates mutual information between each two attributes, that is
+#' \deqn{I(X_i,X_j).}
+#' @template input
+#' @param zeroDiag Boolean flag, whether the diagonal should be filled with zeroes or with feature entropies. 
+#' @return A numerical matrix with mutual information scores, with row and column names copied from \code{X}.
+#' @examples
+#' miMatrix(iris)
+#' @export
+miMatrix<-function(X,zeroDiag=TRUE,threads=0)
+ .Call(C_miMatrix,X,as.logical(zeroDiag),as.integer(threads))
+
 #' Calculate conditional mutual information of all features
 #'
 #' Calculates mutual information between each attributes and the decision, that is
