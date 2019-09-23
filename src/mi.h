@@ -33,22 +33,21 @@ SEXP C_miMatrix(SEXP X,SEXP Diag,SEXP Threads){
  int *cXc=(int*)R_alloc(sizeof(int),2*n*nt);
  double *score=REAL(Ans);
 
- //FIXME: Inefficient re-calculation of cA, also work spread over threads
-
  #pragma omp parallel num_threads(nt)
  {
-  int tn=omp_get_thread_num(),*cA=cXc+(tn*n),*cB=cXc+((nt+tn)*n);
+  int tn=omp_get_thread_num(),*cA=cXc+(tn*n),*cB=cXc+((nt+tn)*n),da;
   struct ht *ht=hta[tn];
-  #pragma omp for
-  for(int e=0;e<m*m;e++){
-   int a=e%m,b=e/m;
-   if(a<b) continue;
-   if(a==b && zd){
-    score[e]=0.;
-    continue;
+  #pragma omp for schedule(static,4)
+  for(int a=0;a<m;a++){
+   da=0;
+   for(int b=0;b<=a;b++){
+    if(a==b && zd){
+     score[a*m+b]=0.;
+     continue;
+    }
+    fillHt(ht,n,nx[a],x[a],nx[b],x[b],NULL,da?NULL:cA,cB,0);da=1;
+    score[a*m+b]=score[b*m+a]=miHt(ht,cA,cB);
    }
-   fillHt(ht,n,nx[a],x[a],nx[b],x[b],NULL,cA,cB,0);
-   score[a*m+b]=score[b*m+a]=miHt(ht,cA,cB);
   }
  }
 
