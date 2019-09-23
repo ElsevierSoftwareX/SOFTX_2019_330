@@ -147,9 +147,12 @@ JIM<-function(X,Y,k=3,threads=0)
 #' @template input
 #' @template y
 #' @template k
+#' @param n Ensemble size
+#' @param p Probability of investigating an attribute.
+#'  When 1, ensemble degenerates into regular method.
 #' @template output
 #' @examples data(MadelonD)
-#' EJMI(MadelonD$X,MadelonD$Y,20)
+#' EJMI(MadelonD$X,MadelonD$Y,20,100)
 #' @export
-EJMI<-function(X,Y,k=3,threads=0)
- .Call(C_EJMI,X,Y,as.integer(k),as.integer(threads))
+EJMI<-function(X,Y,k=3,n=100,p=1/sqrt(ncol(X)),threads=0)
+ .Call(C_EJMI,X,Y,as.integer(k),as.integer(n),as.numeric(p),as.integer(threads))
