@@ -201,10 +201,3 @@ pureImp<-function(X,Y){
  }
  apply(X,2,gi,Y)
 }
-
-pureMiMatrix<-function(X,zeroDiag=TRUE){
- sapply(1:ncol(X),function(e) miScores(X,X[,e]))->ans
- if(zeroDiag) diag(ans)<-0
- colnames(ans)<-names(X)
- ans
-}
