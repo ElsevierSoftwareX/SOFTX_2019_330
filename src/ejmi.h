@@ -4,64 +4,108 @@ SEXP C_EJMI(SEXP X,SEXP Y,SEXP K,SEXP Iters,SEXP Prob,SEXP Threads){
  //FIXME: Handle errors here
  int iters=INTEGER(Iters)[0];
  double p=REAL(Prob)[0];
- if(p<=0 || p>=1.) error("p must be in (0;1)");
+ //if(p<=0 || p>=1.) error("p must be in (0;1)");
+ if(p<0 || p>1.) error("p must be in (0;1)"); //FIXME: allowed for testing
  uint32_t thresh=((double)0xFFFFFFFF)*p;
- uint32_t seed=17; //FIXME: Get this from R's PRNG
 
- uint64_t rngs=seed;
+ //GetRNGState();
+ uint32_t seed=17;//R_unif_index((double)0xFFFFFFFF); 
+ //PutRNGState();
 
  int n,k,m,ny,*y,*nx,**x,nt;
  struct ht **hta;
  prepareInput(X,Y,K,Threads,&hta,&n,&m,&k,&y,&ny,&x,&nx,&nt);
 
- double bs=0.; int *cY,*ctmp,bi=0;
- initialMiScan(hta,n,m,y,ny,x,nx,&cY,&ctmp,NULL,&bs,&bi,nt);
- if(bs==0) return(makeAns(0,NULL,NULL));
-
- //Save selected X as W and discard from further consideration
- int* w=x[bi],nw=nx[bi]; x[bi]=NULL;
-
- //Yet put it as a first selected attribute
+ //Prepare a place for the answer
  SEXP Ans; PROTECT(Ans=allocVector(INTSXP,m));
  setAttrib(Ans,R_NamesSymbol,getAttrib(X,R_NamesSymbol));
- 
  int *ans=INTEGER(Ans);
- for(int e=0;e<m;e++)
-  ans[e]=0;
- 
- //Time for an actual algorithm
- double *as=(double*)R_alloc(sizeof(double),m); //Accumulated score
- for(int e=0;e<m;e++) as[e]=0.;
- int *wx=(int*)R_alloc(sizeof(int),n),*cWX=ctmp;
- bs=0.;
+ for(int e=0;e<m;e++) ans[e]=0;
 
- for(int e=1;e<k;e++){
-  struct ht *ht=hta[0];
-  for(int ee=0;ee<m;ee++){
-   //Ignore attributes already selected
-   if(!x[ee]) continue;
+ //Scores per feature; one vector per thread plus one for mi
+ double *scores=(double*)R_alloc(sizeof(double),m*nt+m);
+ //Integer vectors, three per thread, for cY, cX/cWX and wx
+ int *ints=(int*)R_alloc(sizeof(int),n*nt*3);
+ //Mask vectors, to mark already used features
+ int *masks=(int*)R_alloc(sizeof(int),m*nt);
 
-   //Mix x[ee] with lx making wx
-   int nwx=fillHt(ht,n,nx[ee],x[ee],nw,w,wx,NULL,NULL,1);
 
-   //Make MI of mix and Y and increase its accumulated score
-   fillHt(ht,n,ny,y,nwx,wx,NULL,NULL,cWX,0);
-   as[ee]+=miHt(ht,cY,cWX);
+ #pragma omp parallel num_threads(nt)
+ {
+  int tn=omp_get_thread_num(),dY=0;
+  struct ht *ht=hta[tn];
 
-   if(as[ee]>bs){
-    uint32_t rrr=rng(&rngs,7);
-    if(rrr<thresh){
-     bs=as[ee]; bi=ee;
+  //First, we calculate MI(X,Y)
+  double *mi=scores+nt*m;
+  int *cY=ints+tn*3*n,*cX=ints+(tn*3+1)*n;
+  #pragma omp for
+  for(int e=0;e<m;e++){
+   fillHt(ht,n,ny,y,nx[e],x[e],NULL,dY?NULL:cY,cX,0); dY=1;
+   mi[e]=miHt(ht,cY,cX);
+  }
+  //Implicit barrier here, mi and cY are ready
+  
+  //Re-init 
+  int *used=masks+tn*m,*cWX=cX,*wx=ints+(tn*3+2)*n;
+  double *score=scores+tn*m;
+
+  //Loop over ensemble members
+  #pragma omp for
+  for(int em=0;em<iters;em++){
+   //Clear the mask of used and feature score accumulator
+   for(int e=0;e<m;e++){
+    used[e]=0;
+    score[e]=0.;
+   }
+
+   //Init the member-local RNG state
+   uint64_t rngs=seed;
+
+   //Select first feature from the pre-computed mi vector
+   double bs=0.; int bi=-1;
+   for(int e=0;e<m;e++){
+    if(mi[e]>bs && rng(&rngs,em)<thresh){
+     bs=mi[e]; bi=e;
     }
    }
+   if(bs==0.) continue; //No stem, no fun
+   used[bi]=1;
+
+   #pragma omp critical
+   {
+    ans[bi]++;
+   }
+   int *w=x[bi],nw=nx[bi];
+
+   for(int e=1;e<k;e++){
+    bs=0;
+    for(int ee=0;ee<m;ee++){
+     //Ignore already integrated features
+     if(used[ee]) continue;
+
+     //Mix x[ee] with lx making wx
+     int nwx=fillHt(ht,n,nx[ee],x[ee],nw,w,wx,NULL,NULL,1);
+
+     //Make MI of mix and Y and increase its accumulated score
+     fillHt(ht,n,ny,y,nwx,wx,NULL,NULL,cWX,0);
+     score[ee]+=miHt(ht,cY,cWX);
+
+     if(score[ee]>bs && rng(&rngs,em)<thresh){
+      bs=score[ee];
+      bi=ee;
+     }
+    }
+
+    if(bs>0.){
+     //Give bi a hit
+     #pragma omp critical
+     {
+      ans[bi]++;
+     }
+     w=x[bi]; nw=nx[bi]; used[bi]=1;
+    }else break;
+   }
   }
-  
-  if(bs>0.){
-   //Just give this arg a hit
-   ans[bi]++;
-   w=x[bi]; nw=nx[bi]; x[bi]=NULL; 
-   bs=0.;
-  }else continue;
  }
 
  UNPROTECT(1);
