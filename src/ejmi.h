@@ -8,6 +8,18 @@ SEXP C_EJMI(SEXP X,SEXP Y,SEXP K,SEXP Iters,SEXP Prob,SEXP Threads){
  if(p<0 || p>1.) error("p must be in (0;1)"); //FIXME: allowed for testing
  uint32_t thresh=((double)0xFFFFFFFF)*p;
 
+//  int zn=1/p*100000,z9=0,z123=0;
+//  uint64_t tr=17;
+//  for(int e=0;e<zn;e++){
+//   z9+=rng(&tr,9)<thresh;
+//   z123+=rng(&tr,123)<thresh;
+//  }
+//  printf("peff=%0.3g %0.3g, p=%0.3g\n",
+//   ((double)z9)/((double)zn),
+//   ((double)z123)/((double)zn),
+//   p
+//  );
+
  //GetRNGState();
  uint32_t seed=17;//R_unif_index((double)0xFFFFFFFF); 
  //PutRNGState();
@@ -48,28 +60,26 @@ SEXP C_EJMI(SEXP X,SEXP Y,SEXP K,SEXP Iters,SEXP Prob,SEXP Threads){
   //Re-init 
   int *used=masks+tn*m,*cWX=cX,*wx=ints+(tn*3+2)*n;
   double *score=scores+tn*m;
+  for(int e=0;e<m;e++) used[e]=-1;
 
   //Loop over ensemble members
   #pragma omp for
   for(int em=0;em<iters;em++){
    //Clear the mask of used and feature score accumulator
-   for(int e=0;e<m;e++){
-    used[e]=0;
-    score[e]=0.;
-   }
+   for(int e=0;e<m;e++) score[e]=0.;
 
    //Init the member-local RNG state
-   uint64_t rngs=seed;
+   uint64_t rngs=seed+em; rng(&rngs,em);
 
    //Select first feature from the pre-computed mi vector
    double bs=0.; int bi=-1;
-   for(int e=0;e<m;e++){
-    if(mi[e]>bs && rng(&rngs,em)<thresh){
+   for(int e=0;e<m;e++)
+    if(mi[e]>=bs && rng(&rngs,em)<thresh){
      bs=mi[e]; bi=e;
     }
-   }
-   if(bs==0.) continue; //No stem, no fun
-   used[bi]=1;
+
+   if(bi==-1) continue; //No stem, no fun
+   used[bi]=em;
 
    #pragma omp critical
    {
@@ -81,7 +91,7 @@ SEXP C_EJMI(SEXP X,SEXP Y,SEXP K,SEXP Iters,SEXP Prob,SEXP Threads){
     bs=0;
     for(int ee=0;ee<m;ee++){
      //Ignore already integrated features
-     if(used[ee]) continue;
+     if(used[ee]==em) continue;
 
      //Mix x[ee] with lx making wx
      int nwx=fillHt(ht,n,nx[ee],x[ee],nw,w,wx,NULL,NULL,1);
@@ -90,7 +100,7 @@ SEXP C_EJMI(SEXP X,SEXP Y,SEXP K,SEXP Iters,SEXP Prob,SEXP Threads){
      fillHt(ht,n,ny,y,nwx,wx,NULL,NULL,cWX,0);
      score[ee]+=miHt(ht,cY,cWX);
 
-     if(score[ee]>bs && rng(&rngs,em)<thresh){
+     if(score[ee]>=bs && rng(&rngs,em)<thresh){
       bs=score[ee];
       bi=ee;
      }
@@ -102,7 +112,7 @@ SEXP C_EJMI(SEXP X,SEXP Y,SEXP K,SEXP Iters,SEXP Prob,SEXP Threads){
      {
       ans[bi]++;
      }
-     w=x[bi]; nw=nx[bi]; used[bi]=1;
+     w=x[bi]; nw=nx[bi]; used[bi]=em;
     }else break;
    }
   }
