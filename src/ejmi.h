@@ -6,23 +6,8 @@ SEXP C_EJMI(SEXP X,SEXP Y,SEXP K,SEXP Iters,SEXP Prob,SEXP Threads){
  double p=REAL(Prob)[0];
  //if(p<=0 || p>=1.) error("p must be in (0;1)");
  if(p<0 || p>1.) error("p must be in (0;1)"); //FIXME: allowed for testing
- uint32_t thresh=((double)0xFFFFFFFF)*p;
-
-//  int zn=1/p*100000,z9=0,z123=0;
-//  uint64_t tr=17;
-//  for(int e=0;e<zn;e++){
-//   z9+=rng(&tr,9)<thresh;
-//   z123+=rng(&tr,123)<thresh;
-//  }
-//  printf("peff=%0.3g %0.3g, p=%0.3g\n",
-//   ((double)z9)/((double)zn),
-//   ((double)z123)/((double)zn),
-//   p
-//  );
-
- //GetRNGState();
- uint32_t seed=17;//R_unif_index((double)0xFFFFFFFF); 
- //PutRNGState();
+ uint32_t thresh=((double)(~(uint32_t)0))*p;
+ uint64_t seed=seed_from_r();
 
  int n,k,m,ny,*y,*nx,**x,nt;
  struct ht **hta;
