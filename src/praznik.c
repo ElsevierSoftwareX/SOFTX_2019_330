@@ -52,7 +52,6 @@
 static const R_CallMethodDef R_CallDef[]={
  CALLDEF(C_engineTest,2),
  CALLDEF(C_getMi,2),
- CALLDEF(C_getNmi,2),
  CALLDEF(C_CMIM,4),
  CALLDEF(C_JMI,4),
  CALLDEF(C_DISR,4),

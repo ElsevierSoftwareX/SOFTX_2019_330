@@ -72,6 +72,10 @@ test_that("cmi behaves properly",{
 })
 
 test_that("h behaves properly",{
+ entro<-function(x){
+  table(x)/length(x)->p
+  sum(-ifelse(p>0,p*log(p),0))
+ }
  expect_equal(
   hScores(X),
   apply(X,2,entro)

@@ -60,27 +60,3 @@ SEXP C_getMi(SEXP A,SEXP B){
  UNPROTECT(1);
  return(Ans);
 }
-
-SEXP C_getNmi(SEXP A,SEXP B){
- int N;
- N=length(A);
- if(N!=length(B)) error("A and B size mismatch!");
-
- struct ht *Q=R_allocHt(N);
-
- int nA=length(getAttrib(A,R_LevelsSymbol));
- int nB=length(getAttrib(B,R_LevelsSymbol));
- if((nA==0)||(nB==0)) error("A and B have to be factors!");
- if(nA>N) error("A has  more levels then its length; fix that!");
- if(nB>N) error("B has more levels then its length; fix that!");
-
- int *a=INTEGER(A),*b=INTEGER(B),*cA=(int*)R_alloc(sizeof(int),N*2),*cB=cA+N;
- fillHt(Q,N,nA,a,nB,b,NULL,cA,cB,1);
-
- SEXP Ans; PROTECT(Ans=allocVector(REALSXP,1));
- REAL(Ans)[0]=nmiHt(Q,cA,cB);
- 
- UNPROTECT(1);
- return(Ans);
-}
-
