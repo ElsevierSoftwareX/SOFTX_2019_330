@@ -154,5 +154,5 @@ JIM<-function(X,Y,k=3,threads=0)
 #' @examples data(MadelonD)
 #' EJMI(MadelonD$X,MadelonD$Y,20,100)
 #' @export
-EJMI<-function(X,Y,k=3,n=100,p=1/sqrt(ncol(X)),threads=0)
+EJMI<-function(X,Y,k=5,n=100,p=exp(-1),threads=0)
  .Call(C_EJMI,X,Y,as.integer(k),as.integer(n),as.numeric(p),as.integer(threads))

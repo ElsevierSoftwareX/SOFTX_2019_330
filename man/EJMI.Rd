@@ -4,7 +4,7 @@
 \alias{EJMI}
 \title{Ensemble joint mutual information filter}
 \usage{
-EJMI(X, Y, k = 3, n = 100, p = 1/sqrt(ncol(X)), threads = 0)
+EJMI(X, Y, k = 5, n = 100, p = exp(-1), threads = 0)
 }
 \arguments{
 \item{X}{Attribute table, given as a data frame with either factors (preferred), booleans, integers (treated as categorical) or reals (which undergo automatic categorisation; see below for details).
