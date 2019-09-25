@@ -135,7 +135,6 @@ pureJMI<-function(X,Y,k=3){
   scores[colnames(X)!=tail(selection,1)]->scores
   X[,colnames(X)!=tail(selection,1),drop=FALSE]->X
   scores<-scores+jmiScores(X,Y,x) # apply(X,2,function(xx) mutinfo(mergef(x,factor(xx)),Y))
-  if(max(scores)==0) break
 
   selection<-c(selection,names(which.max(scores)))
   fscores<-c(fscores,max(scores))
@@ -185,7 +184,6 @@ pureDISR<-function(X,Y,k=3){
   X[,colnames(X)!=tail(selection,1),drop=FALSE]->X
   
   scores<-scores+njmiScores(X,Y,x) # apply(X,2,function(xx) nmutinfo(mergef(x,factor(xx)),Y))
-  if(max(scores)==0) break
 
   selection<-c(selection,names(which.max(scores)))
   fscores<-c(fscores,max(scores))
