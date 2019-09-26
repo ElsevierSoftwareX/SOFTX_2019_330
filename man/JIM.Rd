@@ -21,7 +21,7 @@ Must not exceed \code{ncol(X)}.}
 \value{
 A list with two elements: \code{selection}, a vector of indices of the selected features in the selection order, and \code{score}, a vector of corresponding feature scores.
 Names of both vectors will correspond to the names of features in \code{X}.
-Both vectors will either have a length \code{k} or zero, when all features turn out to have zero mutual information with the decision.
+Both vectors will be at most of a length \code{k}, as the selection may stop sooner, even during initial selection, in which case both vectors will be empty.
 }
 \description{
 The method starts with an attribute of a maximal impurity gain with the decision \eqn{Y}.
