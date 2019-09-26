@@ -50,7 +50,7 @@ SEXP C_MRMR(SEXP X,SEXP Y,SEXP K,SEXP Threads,SEXP NoNeg){
   #pragma omp barrier
   #pragma omp single
   {
-   if(bs<0 && noNegatives){
+   if(bs<=0 && noNegatives){
     ke=e;
    }else{
     w=x[bi]; nw=nx[bi]; x[bi]=NULL;
