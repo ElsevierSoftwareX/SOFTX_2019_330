@@ -61,15 +61,15 @@ SEXP C_cmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
  prepareInput(X,W,R_NilValue,Threads,&hta,&n,&m,NULL,&w,&nw,&x,&nx,&nt);
  SEXP Ans=PROTECT(allocMatrix(REALSXP,m,m));
  
- double offset=0.;//FIXME: =aH(W)
+ fillHtOneCounting(hta[0],n,w);
+ double offset=hHt(hta[0]);
 
- //Make X_i,W matrix on which JMI will be calculated
+ //Space for X_iW, essentially a second copy of X
  int *wx=(int*)R_alloc(sizeof(int),n*m);
-// int *nwx=nx; //Will overwrite
 
  int zd=LOGICAL(Diag)[0];
  int *cXc=(int*)R_alloc(sizeof(int),2*n*nt);
- int *nwx=(int*)R_alloc(sizeof(int),m);
+ int *nwx=nx; //Will be overwritten 
  double *score=REAL(Ans);
 
  #pragma omp parallel num_threads(nt)
