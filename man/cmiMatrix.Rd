@@ -21,7 +21,7 @@ A numerical matrix with scores, with row and column names copied from \code{X}.
 }
 \description{
 Calculates mutual information between each two attributes, that is
-\deqn{I(X_i,X_j|Z).}
+\deqn{I(X_i;X_j|Z).}
 }
 \note{
 The method requires input to be discrete to use empirical estimators of distribution, and, consequently, information gain or entropy.

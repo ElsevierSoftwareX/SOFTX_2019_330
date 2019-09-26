@@ -77,11 +77,8 @@ SEXP C_cmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
   int tn=omp_get_thread_num();
   struct ht *ht=hta[tn];
   #pragma omp for
-  for(int e=0;e<m;e++){
-   int *cwx=wx+(n*e);
-   int cnwx=fillHt(ht,n,nx[e],x[e],nw,w,cwx,NULL,NULL,1);
-   nwx[e]=cnwx;
-  }
+  for(int e=0;e<m;e++)
+   nwx[e]=fillHt(ht,n,nx[e],x[e],nw,w,wx+(n*e),NULL,NULL,1);
 
   //Calculate I(WA,WB)
   int *cA=cXc+(tn*n),*cB=cXc+((nt+tn)*n),da;
@@ -95,6 +92,55 @@ SEXP C_cmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
     }
     fillHt(ht,n,nwx[a],wx+(n*a),nwx[b],wx+(n*b),NULL,da?NULL:cA,cB,0);da=1;
     score[a*m+b]=score[b*m+a]=miHt(ht,cA,cB)-offset;
+   }
+  }
+ }
+
+ //Copy attribute names into both dimensions
+ SEXP dimnames=PROTECT(allocVector(VECSXP,2));
+ SET_VECTOR_ELT(dimnames,0,getAttrib(X,R_NamesSymbol));
+ SET_VECTOR_ELT(dimnames,1,getAttrib(X,R_NamesSymbol));
+ setAttrib(Ans,R_DimNamesSymbol,dimnames);
+ 
+ UNPROTECT(2);
+ return(Ans);
+}
+
+SEXP C_jmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
+ int n,m,*nx,**x,nt,nw,*w;
+ struct ht **hta;
+ prepareInput(X,W,R_NilValue,Threads,&hta,&n,&m,NULL,&w,&nw,&x,&nx,&nt);
+ SEXP Ans=PROTECT(allocMatrix(REALSXP,m,m));
+
+ //Space for X_iW, essentially a second copy of X
+ int *wx=(int*)R_alloc(sizeof(int),n*m);
+
+ int zd=LOGICAL(Diag)[0];
+ int *cXc=(int*)R_alloc(sizeof(int),2*n*nt);
+ int *nwx=(int*)R_alloc(sizeof(int),m);
+ double *score=REAL(Ans);
+
+ #pragma omp parallel num_threads(nt)
+ {
+  int tn=omp_get_thread_num();
+  struct ht *ht=hta[tn];
+  #pragma omp for
+  for(int e=0;e<m;e++)
+   nwx[e]=fillHt(ht,n,nx[e],x[e],nw,w,wx+(n*e),NULL,NULL,1);
+  
+
+  //Calculate I(A,WB)
+  int *cA=cXc+(tn*n),*cB=cXc+((nt+tn)*n),da;
+  #pragma omp for schedule(static,4)
+  for(int a=0;a<m;a++){
+   da=0;
+   for(int b=0;b<m;b++){
+    if(a==b && zd){
+     score[a*m+b]=0.;
+     continue;
+    }
+    fillHt(ht,n,nx[a],x[a],nwx[b],wx+(n*b),NULL,da?NULL:cA,cB,0);da=1;
+    score[a*m+b]=miHt(ht,cA,cB);
    }
   }
  }
