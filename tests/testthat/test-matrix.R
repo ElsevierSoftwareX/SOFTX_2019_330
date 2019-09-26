@@ -7,7 +7,21 @@ pureMiMatrix<-function(X,zeroDiag=TRUE){
  ans
 }
 
-test_that("Mi matrix works",{
+pureNmiMatrix<-function(X,zeroDiag=TRUE){
+ sapply(1:ncol(X),function(e) njmiScores(X,X[,e],rep(1,nrow(X))))->ans
+ if(zeroDiag) diag(ans)<-0
+ colnames(ans)<-names(X)
+ ans
+}
+
+pureDnmiMatrix<-function(X,zeroDiag=TRUE){
+ sapply(1:ncol(X),function(e) miScores(X,X[,e]))->ans
+ if(zeroDiag) diag(ans)<-0
+ colnames(ans)<-names(X)
+ t(t(ans)/hScores(X))
+}
+
+test_that("mi matrix works",{
  miMatrix(iris,FALSE)->M
  expect_equal(diag(M),hScores(iris))
  expect_equal(t(M),M)
@@ -23,5 +37,19 @@ test_that("mi matrix works as pure",{
  expect_equal(
   pureMiMatrix(iris,FALSE),
   miMatrix(iris,FALSE)
+ )
+})
+
+test_that("nmi matrix works as pure",{
+ expect_equal(
+  pureNmiMatrix(iris,FALSE),
+  nmiMatrix(iris,FALSE)
+ )
+})
+
+test_that("dnmi matrix works as pure",{
+ expect_equal(
+  pureDnmiMatrix(iris,FALSE),
+  dnmiMatrix(iris,FALSE)
  )
 })

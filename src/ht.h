@@ -158,6 +158,7 @@ double nmiHt(struct ht *Q,int *cA,int *cB){
   I+=cAB*log((cAB*N)/(_cA*_cB));
   H+=-cAB*log(cAB/N);
  }
+ // NaN when I=H=0 is expected
  return(I/H);
 }
 
@@ -169,6 +170,16 @@ double hHt(struct ht *Q){
   H+=-cAB*log(cAB/N);
  }
  return(H/N);
+}
+
+double hC(int n,int nc,int *c){
+ double H=0.,N=n;
+ for(int e=0;e<nc;e++) 
+  if(c[e]){
+   double C=c[e];
+   H+=-C*log(C/N);
+  }
+ return(H/((double)n));
 }
 
 //Impurity is calculated in two parts,
