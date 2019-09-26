@@ -16,6 +16,7 @@
 //Hash table
 
 #include "ht.h"
+#include "ht3.h"
 
 //Shared functions
 
