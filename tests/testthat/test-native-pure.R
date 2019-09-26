@@ -14,7 +14,6 @@ for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
  })
 }
 
-
 if(.Machine$sizeof.pointer==8){
  (function(){
   input$X$const<-NULL
@@ -44,6 +43,11 @@ if(.Machine$sizeof.pointer==8){
   }
  })()
 }
+
+test_that("positive-only MRMR gives no negative scores",{
+ MRMR(iris[,-5],iris[,5],positive=TRUE)->ans
+ expect_true(all(ans$score>0))
+})
 
 test_that("mi works like pure mi",{
  expect_equal(
