@@ -63,6 +63,19 @@ dnmiMatrix<-function(X,zeroDiag=TRUE,threads=0)
 cmiScores<-function(X,Y,Z,threads=0)
  .Call(C_cmi_jmi,X,Y,Z,791L,as.integer(threads))
 
+#' Calculate conditional mutual information between all feature pairs given other feature
+#'
+#' Calculates mutual information between each two attributes, that is
+#' \deqn{I(X_i,X_j|Z).}
+#' @template input
+#' @param Z Condition; should be given as a factor, but other options are accepted, as for attributes. 
+#' @template matrix
+#' @examples
+#' cmiMatrix(iris[,-5],iris[,5])
+#' @export
+cmiMatrix<-function(X,Z,zeroDiag=TRUE,threads=0)
+ .Call(C_cmiMatrix,X,Z,as.logical(zeroDiag),as.integer(threads))
+
 #' Calculate joint mutual information of all features
 #'
 #' Calculated mutual information between each attribute joint with some other vector \code{Z} with the decision, that is
