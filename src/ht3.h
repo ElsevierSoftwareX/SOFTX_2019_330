@@ -1,43 +1,88 @@
-#include <stdint.h>
-
-union count {
- uint64_t count;
- uint64_t *p;
-};
-
 struct ht3{
- struct ht3e *contents;
+ struct ht3e *contents; //size N
  struct ht3e **map;
- int numElements;
 };
 
 struct ht3e{
- int abc[3];
+ int x;
+ int y;
+ int z;
+ int cXYZ;
+ int *cXZ;
+ int *cYZ;
+ int *cZ;
  struct ht3e *nxt; //Next element of the same hash
- uint64_t count;
- int descCountOpPointerMask;
- union count desc[3];
 };
 
-// The idea goes like this
-// 
-// hte3~0 (a,1,!) count=#a1! desc=[ #a!, #2!, #! ]
-// hte3~1 (a,2,!) count=#a2! desc=[ -> ~0.desc[0], #2!, -> ~0.desc[2] ]
-// hte3~2 (b,1,@) count=#b1@ desc=[ #b@, #1@, #@ ]
-// hte3~3 (a,1,@) count=#a1@ desc=[ #a@, -> ~2.desc[1], -> ~2.desc[2] ]
-// ...
-// 
-// ht3 stores hash(X,Y,Z)->hte; many hashes can point to the same hte, it behaves like an index.
-// Again, hash is (X+1)*(nZ+1)*(nY+1)+(Y+1)*(nZ+1)+(Z+1) when (nX+1)*(nZ+1)*(nY+1)+(nZ+1)*(nY+1)+(nZ+1)<=N (or N some hash index amplifier)
-// or some true hash function of X,Y,Z otherwise.
-// 
-// Finding works like this (note that X,..,Z==-1 is valid and means who cares)
-// 1. hash(X,Y,Z)->hte; if this hte.abc!=(X,Y,Z), go to next [-1==everything]. If next is NULL, say NOTFOUND
-// 
-// Adding works like this. It only works for X,Y,Z!=-1.
-// 1. Find X,Y,Z. If found, increment count and each element in desc (if pointer, de-refence and then increment)
-// 2. If not, add a new ht3e, linking last ht3e's next to it. 
-// 3. Init count to 0.
-// 4. For each desc, look for X,Y,Z with -1 in the element this desc ignores.
-// 5. If found, investigate its corresponding dist copy its pointer or make a pointer to its count (IMO copying pointer will never occur)
-// 6. If not found, init your desc as count=0, and add itself in a slot of this hash, by going on the ongoing next chain and replace final NULL with itself; still, do nothing if found itself on the chain.
+int static inline disagree(struct ht3e *E,int x,int y,int z){
+ return(!(
+  ((x==0) || E->x==x) &&
+  ((y==0) || E->y==y) &&
+  ((z==0) || E->z==z)
+ ));
+}
+int static inline hash(int x,int y,int z,int n){
+ return((x+(y<<2)+(z<<3))%n);
+}
+
+//x &y start from 1
+int fillHt3(struct ht3 *ht,int n,int nx,int *x,int ny,int *y,int nz,int *z,int *counts){
+ for(int e=0;e<n;e++) ht->map[e]=NULL;
+ int nE=0,nC=0;
+
+ for(int e=0;e<n;e++){
+  int h=hash(x[e],y[e],z[e],n);
+  struct ht3e **E;
+  for(E=ht->map+h;(*E)&&disagree(*E,x[e],y[e],z[e]);E=&((*E)->nxt));
+
+  if(!*E){
+   //E not found, adding!
+   *E=ht->contents+nE; nE++;
+   (*E)->cXYZ=0;
+
+   //Link XZ
+   struct ht3e **EE;
+   for(EE=ht->map+hash(x[e],0,z[e],n);(*EE)&&disagree(*EE,x[e],0,z[e]);EE=&((*EE)->nxt));
+   if(!*EE){
+    EE=E;
+    (*E)->cXZ=counts+nC; nC++;
+    (*E)->cXZ[0]=0;
+   }else (*E)->cXZ=(*EE)->cXZ;
+ 
+   //Link YZ
+   for(EE=ht->map+hash(x[e],0,z[e],n);(*EE)&&disagree(*EE,x[e],0,z[e]);EE=&((*EE)->nxt));
+   if(!*EE){
+    EE=E;
+    (*E)->cYZ=counts+nC; nC++;
+    (*E)->cYZ[0]=0;
+   }else (*E)->cYZ=(*EE)->cYZ;
+
+   //Link Z
+   for(EE=ht->map+hash(x[e],0,z[e],n);(*EE)&&disagree(*EE,x[e],0,z[e]);EE=&((*EE)->nxt));
+   if(!*EE){
+    EE=E;
+    (*E)->cZ=counts+nC; nC++;
+    (*E)->cZ[0]=0;
+   }else (*E)->cZ=(*EE)->cZ;
+  }
+  //E located, counting!
+  (*E)->cXYZ++;
+  (*E)->cXZ[0]++;
+  (*E)->cYZ[0]++;
+  (*E)->cZ[0]++;
+ }
+ return(nE);
+}
+
+void printHt3(struct ht3 *ht,int ne){
+ for(int e=0;e<ne;e++){ 
+  printf("State %d ",e);
+  struct ht3e *E=ht->contents+e;
+  printf("(%d %d %d) ",E->x,E->y,E->z);
+  printf("cXYZ=%d ",E->cXYZ);
+  printf("cXZ %p=%d ",E->cXZ,E->cXZ[0]);
+  printf("cYZ %p=%d ",E->cYZ,E->cYZ[0]);
+  printf("cZ %p=%d ",E->cZ,E->cZ[0]);
+  printf("\n");
+ }
+}
