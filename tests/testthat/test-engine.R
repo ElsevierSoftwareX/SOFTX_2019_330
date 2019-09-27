@@ -34,3 +34,15 @@ for(seed in 1:5)
   expect_equal(setNames(sapply(cab,length),NULL),J[[4]])
   expect_equal(pureMutinfo(a,b),J[[5]])
  })
+
+#test_that("ht3 works",{
+# .Call(C_cmi2,iris[,1:2],iris[,3],iris[,5],1L)->z
+# expect_equal(length(z),2)
+#})
+
+test_that("ht3 works 2",{
+ data.frame(a=c(1,1,2,2,1,2),b=c(1,2,1,2,1,2),c=c(1,2,2,1,2,1))->Q
+ for(e in 1:3) Q[,e]<-factor(Q[,e])
+ .Call(C_cmi2,Q[,1:2],Q[,2],Q[,3],1L)->z
+ expect_equal(length(z),2)
+})

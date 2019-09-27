@@ -54,3 +54,49 @@ SEXP C_cmi_jmi(SEXP X,SEXP Y,SEXP Z,SEXP Mode,SEXP Threads){
  UNPROTECT(1);
  return(Ans);
 }
+
+SEXP C_cmi2(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
+ int n,m,ny,*y,nz,*z,*nx,**x,nt;
+ struct ht **hta;
+ prepareInput(X,Y,R_NilValue,Threads,&hta,&n,&m,NULL,&y,&ny,&x,&nx,&nt);
+ //Forced 1-thread for now
+ nt=1;
+
+ struct ht3 H;
+ H.contents=(struct hte*)R_alloc(sizeof(struct ht3e),n);
+ H.map=(struct ht3e**)R_alloc(sizeof(struct ht3e*),n);
+ int *CC=(int*)R_alloc(sizeof(int),4*n);
+
+ if(length(Z)!=n) error("Z vector size mismatch");
+ z=convertSEXP(*hta,n,Z,&nz);
+
+ int *cXZc=(int*)R_alloc(sizeof(int),n*nt),
+  *cY=(int*)R_alloc(sizeof(int),n),
+  *xzc=(int*)R_alloc(sizeof(int),n*nt);
+ 
+ SEXP Ans=PROTECT(allocVector(REALSXP,m));
+ double *score=REAL(Ans);
+ for(int e=0;e<m;e++) score[e]=0.;
+
+ {
+  int tn=1,*cXZ=cXZc+(tn*n),*xz=xzc+(tn*n);
+  struct ht *ht=hta[tn];
+  for(int e=0;e<m;e++){
+   int ne=fillHt3(&H,n,nx[e],x[e],ny,y,nz,z,CC);
+   //printf("== X[%d] ==\n",e);
+   //printHt3(&H,ne);
+   score[e]=cmiHt3(&H,ne,n);
+   //Mix X and Z
+   //int nxz=fillHt(ht,n,nz,z,nx[e],x[e],xz,NULL,NULL,1);
+   //fillHt(ht,n,ny,y,nxz,xz,NULL,NULL,cXZ,0);
+   // I(X;Y|Z)=I(Y;X,Z)-I(Y;Z)
+   //CMI or JMI=I(Y;X,Z)
+   // score[e]=miHt(ht,cY,cXZ)+scoreOff;
+  }
+ }
+ //Copy attribute names
+ setAttrib(Ans,R_NamesSymbol,getAttrib(X,R_NamesSymbol));
+ 
+ UNPROTECT(1);
+ return(Ans);
+}

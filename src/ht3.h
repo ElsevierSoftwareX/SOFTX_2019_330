@@ -22,7 +22,7 @@ int static inline disagree(struct ht3e *E,int x,int y,int z){
  ));
 }
 int static inline hash(int x,int y,int z,int n){
- return((x+(y<<2)+(z<<3))%n);
+ return((x+(y*4)+(z*8))%n);
 }
 
 //x &y start from 1
@@ -39,32 +39,37 @@ int fillHt3(struct ht3 *ht,int n,int nx,int *x,int ny,int *y,int nz,int *z,int *
    //E not found, adding!
    *E=ht->contents+nE; nE++;
    (*E)->cXYZ=0;
+   (*E)->nxt=NULL;
+   (*E)->x=x[e];
+   (*E)->y=y[e];
+   (*E)->z=z[e];
 
    //Link XZ
    struct ht3e **EE;
-   for(EE=ht->map+hash(x[e],0,z[e],n);(*EE)&&disagree(*EE,x[e],0,z[e]);EE=&((*EE)->nxt));
-   if(!*EE){
-    EE=E;
+   for(EE=ht->map+hash(x[e],0,z[e],n);(*EE)&&disagree(*EE,x[e],0,z[e]);EE=&((*EE)->nxt)); 
+   if(!*EE || *EE==*E){
+    *EE=*E;
     (*E)->cXZ=counts+nC; nC++;
     (*E)->cXZ[0]=0;
    }else (*E)->cXZ=(*EE)->cXZ;
  
    //Link YZ
-   for(EE=ht->map+hash(x[e],0,z[e],n);(*EE)&&disagree(*EE,x[e],0,z[e]);EE=&((*EE)->nxt));
-   if(!*EE){
-    EE=E;
+   for(EE=ht->map+hash(0,y[e],z[e],n);(*EE)&&disagree(*EE,0,y[e],z[e]);EE=&((*EE)->nxt)); 
+   if(!*EE || *EE==*E){
+    *EE=*E;
     (*E)->cYZ=counts+nC; nC++;
     (*E)->cYZ[0]=0;
    }else (*E)->cYZ=(*EE)->cYZ;
 
    //Link Z
-   for(EE=ht->map+hash(x[e],0,z[e],n);(*EE)&&disagree(*EE,x[e],0,z[e]);EE=&((*EE)->nxt));
-   if(!*EE){
-    EE=E;
+   for(EE=ht->map+hash(0,0,z[e],n);(*EE)&&disagree(*EE,0,0,z[e]);EE=&((*EE)->nxt)); 
+   if(!*EE || *EE==*E){
+    *EE=*E;
     (*E)->cZ=counts+nC; nC++;
     (*E)->cZ[0]=0;
    }else (*E)->cZ=(*EE)->cZ;
   }
+
   //E located, counting!
   (*E)->cXYZ++;
   (*E)->cXZ[0]++;
@@ -74,15 +79,13 @@ int fillHt3(struct ht3 *ht,int n,int nx,int *x,int ny,int *y,int nz,int *z,int *
  return(nE);
 }
 
-void printHt3(struct ht3 *ht,int ne){
- for(int e=0;e<ne;e++){ 
-  printf("State %d ",e);
+double cmiHt3(struct ht3 *ht,int ne,int n){
+ double I=0.,N=(double)n;
+ for(int e=0;e<ne;e++){
   struct ht3e *E=ht->contents+e;
-  printf("(%d %d %d) ",E->x,E->y,E->z);
-  printf("cXYZ=%d ",E->cXYZ);
-  printf("cXZ %p=%d ",E->cXZ,E->cXZ[0]);
-  printf("cYZ %p=%d ",E->cYZ,E->cYZ[0]);
-  printf("cZ %p=%d ",E->cZ,E->cZ[0]);
-  printf("\n");
+  double pXYZ=((double)E->cXYZ)/N;
+  double Q=((double)E->cXYZ)*((double)E->cZ[0])/((double)E->cXZ[0])/((double)E->cYZ[0]);
+  I+=pXYZ*log(Q);
  }
+ return(I);
 }
