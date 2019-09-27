@@ -32,6 +32,10 @@
 #include "jmim.h"
 #include "njmim.h"
 
+//Ensemble selection
+
+#include "ejmi.h"
+
 //Gini impurity based
 
 #include "jim.h"
@@ -68,6 +72,7 @@ static const R_CallMethodDef R_CallDef[]={
  CALLDEF(C_h,2),
  CALLDEF(C_JIM,4),
  CALLDEF(C_cmi2,4),
+ CALLDEF(C_EJMI,6),
  {NULL,NULL,0}
 };
 
