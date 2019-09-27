@@ -40,6 +40,20 @@ miMatrix<-function(X,zeroDiag=TRUE,threads=0)
 cmiScores<-function(X,Y,Z,threads=0)
  .Call(C_cmi_jmi,X,Y,Z,791L,as.integer(threads))
 
+#' Calculate conditional mutual information of all features
+#'
+#' Calculates mutual information between each attributes and the decision, that is
+#' \deqn{I(X,Y|Z).}
+#' @template input
+#' @template y
+#' @param Z Condition; should be given as a factor, but other options are accepted, as for attributes. 
+#' @return A numerical vector with conditional mutual information scores, with names copied from \code{X}.
+#' @examples
+#' cmiScores(iris[,-5],iris$Species,iris$Sepal.Length)
+#' @export
+cmiScores2<-function(X,Y,Z,threads=0)
+ .Call(C_cmi2,X,Y,Z,as.integer(threads))
+
 #' Calculate joint mutual information of all features
 #'
 #' Calculated mutual information between each attribute joint with some other vector \code{Z} with the decision, that is
