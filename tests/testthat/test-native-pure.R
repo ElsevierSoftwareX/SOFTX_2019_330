@@ -5,15 +5,15 @@ X$const<-factor(rep(1,150))
 X$tri<-factor(rep(1:3,50))
 Y<-iris$Species
 list(X=X,Y=Y,k=4)->input
+c("CMI","MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")->algos
 
-for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
+for(algo in algos){
  test_that(sprintf("Native %s works like pure %s",algo,algo),{
   do.call(sprintf("pure%s",algo),input)->pure
   do.call(algo,input)->native
   expect_equal(pure,native)
  })
 }
-
 
 if(.Machine$sizeof.pointer==8){
  (function(){
@@ -22,7 +22,7 @@ if(.Machine$sizeof.pointer==8){
    input$X[[sprintf("const_%s",e)]]<-factor(rep(17,150))
   input$k<-10
 
-  for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
+  for(algo in algos){
    test_that(sprintf("Native %s works like pure %s with truncation",algo,algo),{
     do.call(sprintf("pure%s",algo),input)->pure
     do.call(algo,input)->native
@@ -35,7 +35,7 @@ if(.Machine$sizeof.pointer==8){
   input$X$spoiler<-factor(1:150)
   input$k<-3
 
-  for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR")){
+  for(algo in algos){
    test_that(sprintf("Native %s works like pure %s with spoiler",algo,algo),{
     do.call(sprintf("pure%s",algo),input)->pure
     do.call(algo,input)->native
@@ -44,6 +44,11 @@ if(.Machine$sizeof.pointer==8){
   }
  })()
 }
+
+test_that("positive-only MRMR gives no negative scores",{
+ MRMR(iris[,-5],iris[,5],positive=TRUE)->ans
+ expect_true(all(ans$score>0))
+})
 
 test_that("mi works like pure mi",{
  expect_equal(

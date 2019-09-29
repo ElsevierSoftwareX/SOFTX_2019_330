@@ -6,7 +6,7 @@
 #' @template input
 #' @template y
 #' @template k
-#' @template output-mim
+#' @template output
 #' @examples data(MadelonD)
 #' MIM(MadelonD$X,MadelonD$Y,20)
 #' @export
@@ -19,18 +19,33 @@ MIM<-function(X,Y,k=3,threads=0)
 #' Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
 #' \deqn{J(X)=\min(I(X;Y),\min_{W\in S} I(X;Y|W)),}
 #' where \eqn{S} is the set of already selected attributes.
-#' @note CMIM is identical to the Informative Fragments (IF) method.
 #' @references "Fast Binary Feature Selection using Conditional Mutual Information Maximisation" F. Fleuret, JMLR (2004)
 #' @references "Object recognition with informative features and linear classification" M. Vidal-Naquet and S. Ullman, IEEE Conference on Computer Vision and Pattern Recognition (2003).
 #' @template input
 #' @template y
 #' @template k
-#' @template output-mim
+#' @template output
 #' @examples data(MadelonD)
 #' CMIM(MadelonD$X,MadelonD$Y,20)
 #' @export
 CMIM<-function(X,Y,k=3,threads=0)
  .Call(C_CMIM,X,Y,as.integer(k),as.integer(threads))
+
+#' Conditional mutual information maximisation filter
+#'
+#' The method starts with an attribute of a maximal mutual information with the decision \eqn{Y}.
+#' Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
+#' \deqn{J(X)=I(X;Y|S),}
+#' where \eqn{S} is the set of already selected attributes.
+#' @template input
+#' @template y
+#' @template k
+#' @template output
+#' @examples data(MadelonD)
+#' CMI(MadelonD$X,MadelonD$Y,20)
+#' @export
+CMI<-function(X,Y,k=3,threads=0)
+ .Call(C_CMI,X,Y,as.integer(k),as.integer(threads))
 
 #' Minimum redundancy maximal relevancy filter
 #'
@@ -42,12 +57,14 @@ CMIM<-function(X,Y,k=3,threads=0)
 #' @template input
 #' @template y
 #' @template k
+#' @param positive If true, algorithm won't return features with negative scores (i.e., with redundancy term higher than the relevance therm).
+#'  In that case, \code{k} controls the maximal number of returned features, and is set to `ncol(X)` by default.
 #' @template output
 #' @examples data(MadelonD)
 #' MRMR(MadelonD$X,MadelonD$Y,20)
 #' @export
-MRMR<-function(X,Y,k=3,threads=0)
- .Call(C_MRMR,X,Y,as.integer(k),as.integer(threads))
+MRMR<-function(X,Y,k=if(positive) ncol(X) else 3,positive=FALSE,threads=0)
+ .Call(C_MRMR,X,Y,as.integer(k),as.integer(threads),as.logical(positive))
 
 #' Joint mutual information filter
 #'
@@ -95,7 +112,7 @@ DISR<-function(X,Y,k=3,threads=0)
 #' @template input
 #' @template y
 #' @template k
-#' @template output-mim
+#' @template output
 #' @examples data(MadelonD)
 #' JMIM(MadelonD$X,MadelonD$Y,20)
 #' @references "Feature selection using Joint Mutual Information Maximisation" M. Bennasar, Y. Hicks and R. Setchi, (2015)
@@ -114,7 +131,7 @@ JMIM<-function(X,Y,k=3,threads=0)
 #' @template input
 #' @template y
 #' @template k
-#' @template output-mim
+#' @template output
 #' @examples data(MadelonD)
 #' NJMIM(MadelonD$X,MadelonD$Y,20)
 #' @references "Feature selection using Joint Mutual Information Maximisation" M. Bennasar, Y. Hicks and R. Setchi, (2015)
@@ -140,4 +157,3 @@ NJMIM<-function(X,Y,k=3,threads=0)
 #' @export
 JIM<-function(X,Y,k=3,threads=0)
  .Call(C_JIM,X,Y,as.integer(k),as.integer(threads))
-
