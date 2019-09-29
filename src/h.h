@@ -8,11 +8,19 @@ SEXP C_h(SEXP X,SEXP Threads){
  #pragma omp parallel num_threads(nt)
  {
   int tn=omp_get_thread_num();
-  struct ht *ht=hta[tn];
+  //Re-purpose ht memory
+  int *cX=(int*)((hta[tn])->cnt);
   #pragma omp for
   for(int e=0;e<m;e++){
-   fillHtOneCounting(ht,n,x[e]);
-   score[e]=hHt(ht);
+   for(int ee=0;ee<nx[e];ee++) cX[ee]=0;
+   for(int ee=0;ee<n;ee++) cX[x[e][ee]-1]++;
+
+   double H=0.;
+   for(int ee=0;ee<nx[e];ee++) if(cX[ee]>0){
+    double cAB=((double)(cX[ee]));
+    H+=-cAB*log(cAB/((double)n));
+   }
+   score[e]=H/((double)n);
   }
  }
  //Copy attribute names

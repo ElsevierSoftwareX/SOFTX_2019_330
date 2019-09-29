@@ -1,8 +1,8 @@
-//This is exactly the same as IF, hence the same implementation
-SEXP C_MRMR(SEXP X,SEXP Y,SEXP K,SEXP Threads){
+SEXP C_MRMR(SEXP X,SEXP Y,SEXP K,SEXP Threads,SEXP NoNeg){
  int n,k,m,ny,*y,*nx,**x,nt;
  struct ht **hta;
  prepareInput(X,Y,K,Threads,&hta,&n,&m,&k,&y,&ny,&x,&nx,&nt);
+ int noNegatives=LOGICAL(NoNeg)[0];
 
  double bs=0.,*rels=(double*)R_alloc(sizeof(double),m);
  int bi=0,*ctmp,*ctmp2;
@@ -21,9 +21,10 @@ SEXP C_MRMR(SEXP X,SEXP Y,SEXP K,SEXP Threads){
  double *reds=(double*)R_alloc(sizeof(double),m); //Redundancy
  for(int e=0;e<m;e++) reds[e]=0.;
  bs=-INFINITY;
+ int ke=k;
 
  #pragma omp parallel num_threads(nt)
- for(int e=1;e<k;e++){
+ for(int e=1;e<ke;e++){
   double tbs=-INFINITY;
   int tbi=-1,tn=omp_get_thread_num();
   int *cW=ctmp+(n*tn),*cX=ctmp2+(n*tn),dw=0;
@@ -49,13 +50,17 @@ SEXP C_MRMR(SEXP X,SEXP Y,SEXP K,SEXP Threads){
   #pragma omp barrier
   #pragma omp single
   {
-   w=x[bi]; nw=nx[bi]; x[bi]=NULL;
-   score[e]=bs; idx[e]=bi+1;
-   bs=-INFINITY;
+   if(bs<=0 && noNegatives){
+    ke=e;
+   }else{
+    w=x[bi]; nw=nx[bi]; x[bi]=NULL;
+    score[e]=bs; idx[e]=bi+1;
+    bs=-INFINITY;
+   }
   }
  }
 
- Ans=finishAns(k,Ans,X);
+ Ans=finishAns(ke,Ans,X);
  UNPROTECT(1);
  return(Ans);
 }

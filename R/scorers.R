@@ -61,7 +61,7 @@ dnmiMatrix<-function(X,zeroDiag=TRUE,threads=0)
 #' cmiScores(iris[,-5],iris$Species,iris$Sepal.Length)
 #' @export
 cmiScores<-function(X,Y,Z,threads=0)
- .Call(C_cmi_jmi,X,Y,Z,791L,as.integer(threads))
+ .Call(C_cmi,X,Y,Z,as.integer(threads))
 
 #' Calculate conditional mutual information between all feature pairs given other feature
 #'
