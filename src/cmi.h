@@ -66,6 +66,9 @@ SEXP C_cmi2(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
 
  if(length(Z)!=n) error("Z vector size mismatch");
  z=convertSEXP(*hta,n,Z,&nz);
+ int *cZ=R_alloc(sizeof(int),n);
+ for(int e=0;e<n;e++) cZ[e]=0;
+ for(int e=0;e<n;e++) cZ[z[e]]++;
 
  
  SEXP Ans=PROTECT(allocVector(REALSXP,m));
@@ -77,7 +80,7 @@ SEXP C_cmi2(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
   struct ht *ht=hta[tn];
   for(int e=0;e<m;e++){
    int ne=fillHt3(H,n,nx[e],x[e],ny,y,nz,z);
-   score[e]=cmiHt3(H,ne,n);
+   score[e]=cmiHt3(H,ne,n,cZ);
   }
  }
  //Copy attribute names

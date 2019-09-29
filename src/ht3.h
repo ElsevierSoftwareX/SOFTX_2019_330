@@ -31,7 +31,7 @@ struct ht3* R_allocHt3(int N){
 
 int hash(int x,int y,int z,int mB){
  uint64_t pp=6364136223846793005;
- uint64_t mix=(((1+z)*pp+y)*pp+x)*pp;
+ uint64_t mix=((z*pp+y)*pp+x)*pp;
  return mix%(1<<mB);
 }
 #define PH(x,y,z) ((x)*(ny+1)*(nz)+(y)*(nz)+(z-1))
