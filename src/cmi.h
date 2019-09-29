@@ -105,8 +105,14 @@ SEXP C_cmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
  prepareInput(X,W,R_NilValue,Threads,&hta,&n,&m,NULL,&w,&nw,&x,&nx,&nt);
  SEXP Ans=PROTECT(allocMatrix(REALSXP,m,m));
  
- fillHtOneCounting(hta[0],n,w);
- double offset=hHt(hta[0]);
+ //FIXME: Use some ht memory for that
+ int *cW=(int*)R_alloc(sizeof(int),nw);
+ for(int e=0;e<nw;e++) cW[e]=0;
+ for(int e=0;e<n;e++) cW[w[e]-1]++;
+ double hW=0.;
+ for(int e=0;e<nw;e++) if(cW[e]) hW+=-((double)cW[e])*log((double)cW[e]/(double)n);
+ hW/=(double)n;
+ double offset=hW;
 
  //Space for X_iW, essentially a second copy of X
  int *wx=(int*)R_alloc(sizeof(int),n*m);
