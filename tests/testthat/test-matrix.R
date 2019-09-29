@@ -35,6 +35,12 @@ pureJmiMatrix<-function(X,Z,zeroDiag=TRUE){
  ans
 }
 
+pureNjmiMatrix<-function(X,Z,zeroDiag=TRUE){
+ sapply(1:ncol(X),function(e) njmiScores(X,X[,e],Z))->ans
+ if(zeroDiag) diag(ans)<-0
+ colnames(ans)<-names(X)
+ ans
+}
 
 test_that("mi matrix works",{
  miMatrix(iris,FALSE)->M
@@ -80,5 +86,12 @@ test_that("jmi matrix works as pure",{
  expect_equal(
   pureJmiMatrix(iris,iris[,5],FALSE),
   jmiMatrix(iris,iris[,5],FALSE)
+ )
+})
+
+test_that("njmi matrix works as pure",{
+ expect_equal(
+  pureNjmiMatrix(iris,iris[,5],FALSE),
+  njmiMatrix(iris,iris[,5],FALSE)
  )
 })

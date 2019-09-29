@@ -153,7 +153,8 @@ SEXP C_cmiMatrix(SEXP X,SEXP Z,SEXP Diag,SEXP Threads){
  return(Ans);
 }
 
-SEXP C_jmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
+SEXP jmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads,int nrm){
+ int zd=LOGICAL(Diag)[0];
  int n,m,*nx,**x,nt,nw,*w;
  struct ht **hta;
  prepareInput(X,W,R_NilValue,Threads,&hta,&n,&m,NULL,&w,&nw,&x,&nx,&nt);
@@ -162,7 +163,6 @@ SEXP C_jmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
  //Space for X_iW, essentially a second copy of X
  int *wx=(int*)R_alloc(sizeof(int),n*m);
 
- int zd=LOGICAL(Diag)[0];
  int *cXc=(int*)R_alloc(sizeof(int),2*n*nt);
  int *nwx=(int*)R_alloc(sizeof(int),m);
  double *score=REAL(Ans);
@@ -187,7 +187,9 @@ SEXP C_jmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
      continue;
     }
     fillHt(ht,n,nx[a],x[a],nwx[b],wx+(n*b),NULL,da?NULL:cA,cB,0);da=1;
-    score[a*m+b]=miHt(ht,cA,cB);
+    if(nrm)
+     score[a*m+b]=nmiHt(ht,cA,cB); else
+     score[a*m+b]=miHt(ht,cA,cB);
    }
   }
  }
@@ -202,3 +204,10 @@ SEXP C_jmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
  return(Ans);
 }
 
+SEXP C_jmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
+ return(jmiMatrix(X,W,Diag,Threads,0));
+}
+
+SEXP C_njmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
+ return(jmiMatrix(X,W,Diag,Threads,1));
+}

@@ -66,6 +66,7 @@ static const R_CallMethodDef R_CallDef[]={
  CALLDEF(C_cmi,4),
  CALLDEF(C_cmiMatrix,4),
  CALLDEF(C_jmiMatrix,4),
+ CALLDEF(C_njmiMatrix,4),
  CALLDEF(C_nmiMatrix,3),
  CALLDEF(C_dnmiMatrix,3),
  CALLDEF(C_im,3),

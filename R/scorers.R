@@ -120,6 +120,19 @@ jmiMatrix<-function(X,Z,zeroDiag=TRUE,threads=0)
 njmiScores<-function(X,Y,Z,threads=0)
  .Call(C_cmi_jmi,X,Y,Z,793L,as.integer(threads))
 
+#' Calculate normalised joint mutual information between all feature pairs given other feature
+#'
+#' Calculates joint mutual information between each two attributes, that is
+#' \deqn{\frac{I(X_i;X_j,Z)}{H(X_i,X_j,Z)}.}
+#' @template input
+#' @param Z Condition; should be given as a factor, but other options are accepted, as for attributes. 
+#' @template matrix
+#' @examples
+#' njmiMatrix(iris[,-5],iris[,5])
+#' @export
+njmiMatrix<-function(X,Z,zeroDiag=TRUE,threads=0)
+ .Call(C_njmiMatrix,X,Z,as.logical(zeroDiag),as.integer(threads))
+
 #' Calculate Gini impurity scores of all features
 #'
 #' Calculates Gini impurity between each attribute and the decision, that is
