@@ -63,7 +63,7 @@ int main(int argc,char **argv){
  
   int *cZ=cY; //Reuse
   for(int e=0;e<n;e++) cZ[e]=0;
-  for(int e=0;e<n;e++) cZ[z[e]]++;
+  for(int e=0;e<n;e++) cZ[z[e]-1]++;
   for(int e=0;e<(1<<H->mBits);e++) H->map[e]=NULL;
   for(int e=0;e<n;e++) H->contents[e].nxt=NULL;
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&tpb);

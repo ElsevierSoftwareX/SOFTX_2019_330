@@ -140,7 +140,7 @@ double cmiHt3(struct ht3 *ht,int ne,int n,int *cZ){
  for(int e=0;e<ne;e++){
   struct ht3e *E=ht->contents+e;
   double pXYZ=((double)E->cXYZ)/N;
-  double Q=((double)E->cXYZ)*((double)cZ[E->z])/((double)E->cXZ[0])/((double)E->cYZ[0]);
+  double Q=((double)E->cXYZ)*((double)cZ[E->z-1])/((double)E->cXZ[0])/((double)E->cYZ[0]);
   I+=pXYZ*log(Q);
  }
  return(I);

@@ -59,25 +59,24 @@ SEXP C_cmi2(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
  int n,m,ny,*y,nz,*z,*nx,**x,nt;
  struct ht **hta;
  prepareInput(X,Y,R_NilValue,Threads,&hta,&n,&m,NULL,&y,&ny,&x,&nx,&nt);
- //Forced 1-thread for now
- nt=1;
-
- struct ht3 *H=R_allocHt3(n);
+ struct ht3 **Ha=R_alloc(sizeof(struct ht3*),nt);
+ for(int e=0;e<nt;e++) Ha[e]=R_allocHt3(n);
 
  if(length(Z)!=n) error("Z vector size mismatch");
  z=convertSEXP(*hta,n,Z,&nz);
  int *cZ=R_alloc(sizeof(int),n);
  for(int e=0;e<n;e++) cZ[e]=0;
- for(int e=0;e<n;e++) cZ[z[e]]++;
-
+ for(int e=0;e<n;e++) cZ[z[e]-1]++;
  
  SEXP Ans=PROTECT(allocVector(REALSXP,m));
  double *score=REAL(Ans);
  for(int e=0;e<m;e++) score[e]=0.;
 
+ #pragma omp parallel num_threads(nt)
  {
-  int tn=1;
-  struct ht *ht=hta[tn];
+  int tn=omp_get_thread_num();
+  struct ht3 *H=Ha[tn];
+  #pragma omp for
   for(int e=0;e<m;e++){
    int ne=fillHt3(H,n,nx[e],x[e],ny,y,nz,z);
    score[e]=cmiHt3(H,ne,n,cZ);
