@@ -6,7 +6,7 @@
 #' @template input
 #' @template y
 #' @template k
-#' @template output-mim
+#' @template output
 #' @examples data(MadelonD)
 #' MIM(MadelonD$X,MadelonD$Y,20)
 #' @export
@@ -25,7 +25,7 @@ MIM<-function(X,Y,k=3,threads=0)
 #' @template input
 #' @template y
 #' @template k
-#' @template output-mim
+#' @template output
 #' @examples data(MadelonD)
 #' CMIM(MadelonD$X,MadelonD$Y,20)
 #' @export
@@ -42,12 +42,14 @@ CMIM<-function(X,Y,k=3,threads=0)
 #' @template input
 #' @template y
 #' @template k
+#' @param positive If true, algorithm won't return features with negative scores (i.e., with redundancy term higher than the relevance therm).
+#'  In that case, \code{k} controls the maximal number of returned features, and is set to `ncol(X)` by default.
 #' @template output
 #' @examples data(MadelonD)
 #' MRMR(MadelonD$X,MadelonD$Y,20)
 #' @export
-MRMR<-function(X,Y,k=3,threads=0)
- .Call(C_MRMR,X,Y,as.integer(k),as.integer(threads))
+MRMR<-function(X,Y,k=if(positive) ncol(X) else 3,positive=FALSE,threads=0)
+ .Call(C_MRMR,X,Y,as.integer(k),as.integer(threads),as.logical(positive))
 
 #' Joint mutual information filter
 #'
@@ -95,7 +97,7 @@ DISR<-function(X,Y,k=3,threads=0)
 #' @template input
 #' @template y
 #' @template k
-#' @template output-mim
+#' @template output
 #' @examples data(MadelonD)
 #' JMIM(MadelonD$X,MadelonD$Y,20)
 #' @references "Feature selection using Joint Mutual Information Maximisation" M. Bennasar, Y. Hicks and R. Setchi, (2015)
@@ -114,7 +116,7 @@ JMIM<-function(X,Y,k=3,threads=0)
 #' @template input
 #' @template y
 #' @template k
-#' @template output-mim
+#' @template output
 #' @examples data(MadelonD)
 #' NJMIM(MadelonD$X,MadelonD$Y,20)
 #' @references "Feature selection using Joint Mutual Information Maximisation" M. Bennasar, Y. Hicks and R. Setchi, (2015)
@@ -140,4 +142,3 @@ NJMIM<-function(X,Y,k=3,threads=0)
 #' @export
 JIM<-function(X,Y,k=3,threads=0)
  .Call(C_JIM,X,Y,as.integer(k),as.integer(threads))
-
