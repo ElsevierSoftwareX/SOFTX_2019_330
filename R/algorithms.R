@@ -19,7 +19,6 @@ MIM<-function(X,Y,k=3,threads=0)
 #' Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
 #' \deqn{J(X)=\min(I(X;Y),\min_{W\in S} I(X;Y|W)),}
 #' where \eqn{S} is the set of already selected attributes.
-#' @note CMIM is identical to the Informative Fragments (IF) method.
 #' @references "Fast Binary Feature Selection using Conditional Mutual Information Maximisation" F. Fleuret, JMLR (2004)
 #' @references "Object recognition with informative features and linear classification" M. Vidal-Naquet and S. Ullman, IEEE Conference on Computer Vision and Pattern Recognition (2003).
 #' @template input
@@ -31,6 +30,20 @@ MIM<-function(X,Y,k=3,threads=0)
 #' @export
 CMIM<-function(X,Y,k=3,threads=0)
  .Call(C_CMIM,X,Y,as.integer(k),as.integer(threads))
+
+#TODO: Docs vvv
+
+#' Conditional mutual information maximisation filter
+#'
+#' @template input
+#' @template y
+#' @template k
+#' @template output
+#' @examples data(MadelonD)
+#' CMI(MadelonD$X,MadelonD$Y,20)
+#' @export
+CMI<-function(X,Y,k=3,threads=0)
+ .Call(C_CMI,X,Y,as.integer(k),as.integer(threads))
 
 #' Minimum redundancy maximal relevancy filter
 #'
