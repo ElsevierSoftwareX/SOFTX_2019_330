@@ -1,5 +1,6 @@
 enum cmi_jmi_mode {cjmCMI=791,cjmJMI=792,cjmNJMI=793};
 
+//TODO: Drop CMI stuff from here, and migrate this to separate file, jmi.h
 SEXP C_cmi_jmi(SEXP X,SEXP Y,SEXP Z,SEXP Mode,SEXP Threads){
  if(length(Mode)!=1) error("Invalid mode");
  int mode=INTEGER(Mode)[0];
@@ -55,41 +56,7 @@ SEXP C_cmi_jmi(SEXP X,SEXP Y,SEXP Z,SEXP Mode,SEXP Threads){
  return(Ans);
 }
 
-SEXP C_cmi2(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
- int n,m,ny,*y,nz,*z,*nx,**x,nt;
- struct ht **hta;
- prepareInput(X,Y,R_NilValue,Threads,&hta,&n,&m,NULL,&y,&ny,&x,&nx,&nt);
- struct ht3 **Ha=(struct ht3**)R_alloc(sizeof(struct ht3*),nt);
- for(int e=0;e<nt;e++) Ha[e]=R_allocHt3(n);
-
- if(length(Z)!=n) error("Z vector size mismatch");
- z=convertSEXP(*hta,n,Z,&nz);
- int *cZ=(int*)R_alloc(sizeof(int),n);
- for(int e=0;e<n;e++) cZ[e]=0;
- for(int e=0;e<n;e++) cZ[z[e]-1]++;
- 
- SEXP Ans=PROTECT(allocVector(REALSXP,m));
- double *score=REAL(Ans);
- for(int e=0;e<m;e++) score[e]=0.;
-
- #pragma omp parallel num_threads(nt)
- {
-  int tn=omp_get_thread_num();
-  struct ht3 *H=Ha[tn];
-  #pragma omp for
-  for(int e=0;e<m;e++){
-   int ne=fillHt3(H,n,nx[e],x[e],ny,y,nz,z);
-   score[e]=cmiHt3(H,ne,n,cZ);
-  }
- }
- //Copy attribute names
- setAttrib(Ans,R_NamesSymbol,getAttrib(X,R_NamesSymbol));
- 
- UNPROTECT(1);
- return(Ans);
-}
-
-SEXP C_cmi3(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
+SEXP C_cmi(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
  int n,m,ny,*y,nz,*z,*nx,**x,nt;
  struct ht **hta;
  prepareInput(X,Y,R_NilValue,Threads,&hta,&n,&m,NULL,&y,&ny,&x,&nx,&nt);
@@ -106,9 +73,7 @@ SEXP C_cmi3(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
  int *cYZ=(int*)R_alloc(sizeof(int),n);
  //yz starts from one
  int nyz=fillHt(hta[0],n,ny,y,nz,z,yz,NULL,cZ,1);
- //TODO: This shall be some ht function, maybe even a yet-another fillHt argument...
- for(int e=0;e<hta[0]->nAB;e++)
-  cYZ[e]=hta[0]->cnt[e].c;
+ mixCountsHt(hta[0],cYZ);
  transHt(hta[0],NULL,yz2z);
  
  SEXP Ans=PROTECT(allocVector(REALSXP,m));

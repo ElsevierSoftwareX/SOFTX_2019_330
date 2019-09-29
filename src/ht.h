@@ -150,6 +150,11 @@ void transHt(struct ht *Q,int *mix2a,int *mix2b){
  }
 }
 
+void mixCountsHt(struct ht *Q,int *c){
+ for(int e=0;e<Q->nAB;e++)
+  c[e]=Q->cnt[e].c;
+}
+
 double cmiHt(struct ht *Q,int *cXW,int *cYW,int *yw2w,int *cW){
  double I=0.,N=Q->N;
  for(int e=0;e<Q->nAB;e++){
@@ -158,7 +163,6 @@ double cmiHt(struct ht *Q,int *cXW,int *cYW,int *yw2w,int *cW){
    _cXW=cXW[GET_A(Q->cnt[e].ab)],
    _cYW=cYW[GET_B(Q->cnt[e].ab)],
    _cW=cW[yw2w[GET_B(Q->cnt[e].ab)]];
-  //printf(" XZ %0.2f YZ %0.2f XYZ %0.2f Z %0.2f\n",_cXW,_cYW,_cXYW,_cW);
   I+=_cXYW*log(_cXYW*_cW/_cXW/_cYW);
  }
  return(I/N);
