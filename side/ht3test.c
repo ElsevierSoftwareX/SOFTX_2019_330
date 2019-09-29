@@ -26,15 +26,12 @@ void error(const char *e){
 #include "../src/pcg.h"
 
 int main(int argc,char **argv){
- printf("mb\tn\tnx\tny\tnz\tns\tcmi\tnst\toccp\tpoccp\tmD\taD\ttime\ttimeOld\n");
  uint64_t r=21; rng(&r,0);
  struct timespec tpa,tpb;
- double timeOld=0.;
- double timeNew=0.;
+ double timeOld=0.,timeNew=0.,gAveDepth=0.;
+ int reps=1000;
 
- for(int j=0;j<1;j++){
-
-  
+ for(int j=0;j<reps;j++){
   int n,nx,ny,nz;
   if(1){
    if(rng(&r,0)%2==0) n=50+rng(&r,0)%100; else n=100+rng(&r,0)%300;
@@ -62,17 +59,20 @@ int main(int argc,char **argv){
    x[e]=rng(&r,0)%nx+1;
    y[e]=rng(&r,0)%ny+1;
    z[e]=rng(&r,0)%nz+1;
-   int nB=5;
-   printf(">>> %d %d %d => %d %d %d %d\n",x[e],y[e],z[e],hash(x[e],y[e],z[e],nB),hash(x[e],0,z[e],nB),hash(0,y[e],z[e],nB),hash(z[e],1,z[e],nB));
   }
  
+  int *cZ=cY; //Reuse
+  for(int e=0;e<n;e++) cZ[e]=0;
+  for(int e=0;e<n;e++) cZ[z[e]]++;
+  for(int e=0;e<(1<<H->mBits);e++) H->map[e]=NULL;
+  for(int e=0;e<n;e++) H->contents[e].nxt=NULL;
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&tpb);
   double timeHt3=0.; int ni=0;
   int ns; double cmi;
   while(timeHt3<10000){
    ni++;
    ns=fillHt3(H,n,nx,x,ny,y,nz,z);
-   cmi=cmiHt3(H,ns,n);
+   cmi=cmiHt3(H,ns,n,cZ);
    clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&tpa);
    timeHt3=((tpa.tv_sec-tpb.tv_sec)*1e9+(tpa.tv_nsec-tpb.tv_nsec));
   }
@@ -89,14 +89,17 @@ int main(int argc,char **argv){
   }
   double occupation=((double)numOccupied)/((double)(1<<H->mBits));
   aveDepth/=numOccupied;
+  gAveDepth+=aveDepth;
 
   //Alternative ht
+  for(int e=0;e<n;e++) cY[e]=0;
+  for(int e=0;e<n;e++) cY[y[e]]++;
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&tpb);
   double timeHt=0.; ni=0;
   while(timeHt<10000){
    ni++;
    int nxz=fillHt(h,n,nz,z,nx,x,xz,NULL,NULL,1);
-   fillHt(h,n,ny,y,nxz,xz,NULL,cY,cXZ,0); //filling cY is a bit cheating
+   fillHt(h,n,ny,y,nxz,xz,NULL,NULL,cXZ,0);
    miHt(h,cY,cXZ);
    clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&tpa);
    timeHt=((tpa.tv_sec-tpb.tv_sec)*1e9+(tpa.tv_nsec-tpb.tv_nsec));
@@ -106,9 +109,6 @@ int main(int argc,char **argv){
   timeNew+=timeHt3;
   timeOld+=timeHt;
 
-
-  printf("%d\t%d\t%d\t%d\t%d\t%d\t%0.3f\t%d\t%d\t%0.3f\t%d\t%0.3f\t%0.6f\t%0.6f\n",H->mBits,n,nx,ny,nz,ns,cmi,ns,numOccupied,occupation,maxDepth,aveDepth,timeHt3,timeHt);
-
   free(x);
   free(y);
   free(z);
@@ -116,13 +116,15 @@ int main(int argc,char **argv){
   free(H->contents);
   free(H->map);
   free(H);
-
+ 
+  free(cXZ);
+  free(cY);
   free(xz);
   free(h->map);
   free(h->cnt);
   free(h);
  }
- fprintf(stderr,"Slowdown: %0.3f\n",timeNew/timeOld);
+ fprintf(stderr,"Slowdown: %0.3f\nAve depth: %0.3f\n",timeNew/timeOld,gAveDepth/((double)reps));
  
  return(0);
 }
