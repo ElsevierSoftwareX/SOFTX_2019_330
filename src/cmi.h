@@ -59,12 +59,12 @@ SEXP C_cmi2(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
  int n,m,ny,*y,nz,*z,*nx,**x,nt;
  struct ht **hta;
  prepareInput(X,Y,R_NilValue,Threads,&hta,&n,&m,NULL,&y,&ny,&x,&nx,&nt);
- struct ht3 **Ha=R_alloc(sizeof(struct ht3*),nt);
+ struct ht3 **Ha=(struct ht3**)R_alloc(sizeof(struct ht3*),nt);
  for(int e=0;e<nt;e++) Ha[e]=R_allocHt3(n);
 
  if(length(Z)!=n) error("Z vector size mismatch");
  z=convertSEXP(*hta,n,Z,&nz);
- int *cZ=R_alloc(sizeof(int),n);
+ int *cZ=(int*)R_alloc(sizeof(int),n);
  for(int e=0;e<n;e++) cZ[e]=0;
  for(int e=0;e<n;e++) cZ[z[e]-1]++;
  
@@ -80,6 +80,51 @@ SEXP C_cmi2(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
   for(int e=0;e<m;e++){
    int ne=fillHt3(H,n,nx[e],x[e],ny,y,nz,z);
    score[e]=cmiHt3(H,ne,n,cZ);
+  }
+ }
+ //Copy attribute names
+ setAttrib(Ans,R_NamesSymbol,getAttrib(X,R_NamesSymbol));
+ 
+ UNPROTECT(1);
+ return(Ans);
+}
+
+SEXP C_cmi3(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
+ int n,m,ny,*y,nz,*z,*nx,**x,nt;
+ struct ht **hta;
+ prepareInput(X,Y,R_NilValue,Threads,&hta,&n,&m,NULL,&y,&ny,&x,&nx,&nt);
+
+ if(length(Z)!=n) error("Z vector size mismatch");
+ z=convertSEXP(*hta,n,Z,&nz);
+ int *cXYZc=(int*)R_alloc(sizeof(int),n*nt);
+ int *cXZc=(int*)R_alloc(sizeof(int),n*nt);
+ int *xzc=(int*)R_alloc(sizeof(int),n*nt);
+
+ int *cZ=(int*)R_alloc(sizeof(int),n);
+ int *yz2z=(int*)R_alloc(sizeof(int),n);
+ int *yz=(int*)R_alloc(sizeof(int),n);
+ int *cYZ=(int*)R_alloc(sizeof(int),n);
+ //yz starts from one
+ int nyz=fillHt(hta[0],n,ny,y,nz,z,yz,NULL,cZ,1);
+ //TODO: This shall be some ht function, maybe even a yet-another fillHt argument...
+ for(int e=0;e<hta[0]->nAB;e++)
+  cYZ[e]=hta[0]->cnt[e].c;
+ transHt(hta[0],NULL,yz2z);
+ 
+ SEXP Ans=PROTECT(allocVector(REALSXP,m));
+ double *score=REAL(Ans);
+ for(int e=0;e<m;e++) score[e]=0.;
+
+ #pragma omp parallel num_threads(nt)
+ {
+  int tn=omp_get_thread_num();
+  int *cXYZ=cXYZc+tn*n,*cXZ=cXZc+tn*n,*xz=xzc+tn*n;
+  struct ht *ht=hta[tn];
+  #pragma omp for
+  for(int e=0;e<m;e++){
+   int nxz=fillHt(ht,n,nx[e],x[e],nz,z,xz,NULL,NULL,1);
+   fillHt(ht,n,nxz,xz,nyz,yz,NULL,cXZ,cXYZ,0);
+   score[e]=cmiHt(ht,cXZ,cYZ,yz2z,cZ);
   }
  }
  //Copy attribute names

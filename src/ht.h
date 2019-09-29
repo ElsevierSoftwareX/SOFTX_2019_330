@@ -139,6 +139,31 @@ double nmiHt(struct ht *Q,int *cA,int *cB){
  return(I/H);
 }
 
+//Note translation vectors are zero-based, i.e. one must subtract
+// mixOff like mix2a[mix[e]-mixOff]-> a (in original offset)
+void transHt(struct ht *Q,int *mix2a,int *mix2b){
+ for(int e=0;e<Q->nAB;e++){
+  if(mix2a)
+   mix2a[e]=GET_A(Q->cnt[e].ab);
+  if(mix2b)
+   mix2b[e]=GET_B(Q->cnt[e].ab);
+ }
+}
+
+double cmiHt(struct ht *Q,int *cXW,int *cYW,int *yw2w,int *cW){
+ double I=0.,N=Q->N;
+ for(int e=0;e<Q->nAB;e++){
+  if(!(Q->cnt[e].c)) continue;
+  double _cXYW=((double)Q->cnt[e].c),
+   _cXW=cXW[GET_A(Q->cnt[e].ab)],
+   _cYW=cYW[GET_B(Q->cnt[e].ab)],
+   _cW=cW[yw2w[GET_B(Q->cnt[e].ab)]];
+  //printf(" XZ %0.2f YZ %0.2f XYZ %0.2f Z %0.2f\n",_cXW,_cYW,_cXYW,_cW);
+  I+=_cXYW*log(_cXYW*_cW/_cXW/_cYW);
+ }
+ return(I/N);
+}
+
 //Impurity is calculated in two parts,
 // p_xy^2/p_x^2 ~ x and constant p_y^2 ...
 double imHt(struct ht *Q,int *cA){
