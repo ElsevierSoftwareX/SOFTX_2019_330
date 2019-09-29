@@ -144,6 +144,8 @@ double nmiHt(struct ht *Q,int *cA,int *cB){
 // mixOff like mix2a[mix[e]-mixOff]-> a (in original offset)
 void transHt(struct ht *Q,int *mix2a,int *mix2b){
  for(int e=0;e<Q->nAB;e++){
+  if(mix2a)
+   mix2a[e]=GET_A(Q->cnt[e].ab);
   if(mix2b)
    mix2b[e]=GET_B(Q->cnt[e].ab);
  }

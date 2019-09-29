@@ -15,35 +15,33 @@ for(algo in algos){
  })
 }
 
-if(.Machine$sizeof.pointer==8){
- (function(){
-  input$X$const<-NULL
-  for(e in 1:5)
-   input$X[[sprintf("const_%s",e)]]<-factor(rep(17,150))
-  input$k<-10
+(function(){
+ input$X$const<-NULL
+ for(e in 1:5)
+  input$X[[sprintf("const_%s",e)]]<-factor(rep(17,150))
+ input$k<-10
 
-  for(algo in algos){
-   test_that(sprintf("Native %s works like pure %s with truncation",algo,algo),{
-    do.call(sprintf("pure%s",algo),input)->pure
-    do.call(algo,input)->native
-    expect_equal(pure,native)
-   })
-  }
- })()
+ for(algo in algos){
+  test_that(sprintf("Native %s works like pure %s with truncation",algo,algo),{
+   do.call(sprintf("pure%s",algo),input)->pure
+   do.call(algo,input)->native
+   expect_equal(pure,native)
+  })
+ }
+})()
 
- (function(){
-  input$X$spoiler<-factor(1:150)
-  input$k<-3
+(function(){
+ input$X$spoiler<-factor(1:150)
+ input$k<-3
 
-  for(algo in algos){
-   test_that(sprintf("Native %s works like pure %s with spoiler",algo,algo),{
-    do.call(sprintf("pure%s",algo),input)->pure
-    do.call(algo,input)->native
-    expect_equal(pure,native)
-   })
-  }
- })()
-}
+ for(algo in algos){
+  test_that(sprintf("Native %s works like pure %s with spoiler",algo,algo),{
+   do.call(sprintf("pure%s",algo),input)->pure
+   do.call(algo,input)->native
+   expect_equal(pure,native)
+  })
+ }
+})()
 
 test_that("positive-only MRMR gives no negative scores",{
  MRMR(iris[,-5],iris[,5],positive=TRUE)->ans
