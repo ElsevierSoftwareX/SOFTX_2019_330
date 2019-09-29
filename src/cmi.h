@@ -99,27 +99,22 @@ SEXP C_cmi(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
  return(Ans);
 }
 
-SEXP C_cmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
- int n,m,*nx,**x,nt,nw,*w;
+SEXP C_cmiMatrix(SEXP X,SEXP Z,SEXP Diag,SEXP Threads){
+ int n,m,*nx,**x,nt,nz,*z;
  struct ht **hta;
- prepareInput(X,W,R_NilValue,Threads,&hta,&n,&m,NULL,&w,&nw,&x,&nx,&nt);
+ int zd=LOGICAL(Diag)[0];
+ prepareInput(X,Z,R_NilValue,Threads,&hta,&n,&m,NULL,&z,&nz,&x,&nx,&nt);
  SEXP Ans=PROTECT(allocMatrix(REALSXP,m,m));
- 
- //FIXME: Use some ht memory for that
- int *cW=(int*)R_alloc(sizeof(int),nw);
- for(int e=0;e<nw;e++) cW[e]=0;
- for(int e=0;e<n;e++) cW[w[e]-1]++;
- double hW=0.;
- for(int e=0;e<nw;e++) if(cW[e]) hW+=-((double)cW[e])*log((double)cW[e]/(double)n);
- hW/=(double)n;
- double offset=hW;
 
  //Space for X_iW, essentially a second copy of X
- int *wx=(int*)R_alloc(sizeof(int),n*m);
-
- int zd=LOGICAL(Diag)[0];
+ int *zx=(int*)R_alloc(sizeof(int),n*m);
+ int *cZ=(int*)R_alloc(sizeof(int),n);
+ for(int e=0;e<nz;e++) cZ[e]=0;
+ for(int e=0;e<n;e++) cZ[z[e]-1]++;
  int *cXc=(int*)R_alloc(sizeof(int),2*n*nt);
- int *nwx=nx; //Will be overwritten 
+ int *nzx=(int*)R_alloc(sizeof(int),m);
+ //Collapsed state translation matrix
+ int *xz2z=(int*)R_alloc(sizeof(int),n*m);
  double *score=REAL(Ans);
 
  #pragma omp parallel num_threads(nt)
@@ -127,11 +122,13 @@ SEXP C_cmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
   int tn=omp_get_thread_num();
   struct ht *ht=hta[tn];
   #pragma omp for
-  for(int e=0;e<m;e++)
-   nwx[e]=fillHt(ht,n,nx[e],x[e],nw,w,wx+(n*e),NULL,NULL,1);
+  for(int e=0;e<m;e++){
+   nzx[e]=fillHt(ht,n,nx[e],x[e],nz,z,zx+(n*e),NULL,NULL,1);
+   transHt(ht,NULL,xz2z+n*e);
+  }
+  
 
-  //Calculate I(WA,WB)
-  int *cA=cXc+(tn*n),*cB=cXc+((nt+tn)*n),da;
+  int *cAZ=cXc+(tn*n),*cBZ=cXc+((nt+tn)*n),da;
   #pragma omp for schedule(static,4)
   for(int a=0;a<m;a++){
    da=0;
@@ -140,8 +137,8 @@ SEXP C_cmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
      score[a*m+b]=0.;
      continue;
     }
-    fillHt(ht,n,nwx[a],wx+(n*a),nwx[b],wx+(n*b),NULL,da?NULL:cA,cB,0);da=1;
-    score[a*m+b]=score[b*m+a]=miHt(ht,cA,cB)-offset;
+    fillHt(ht,n,nzx[b],zx+(n*b),nzx[a],zx+(n*a),NULL,cBZ,da?NULL:cAZ,0);da=1;
+    score[b*m+a]=score[a*m+b]=cmiHt(ht,cBZ,cAZ,xz2z+n*a,cZ);
    }
   }
  }
@@ -204,3 +201,4 @@ SEXP C_jmiMatrix(SEXP X,SEXP W,SEXP Diag,SEXP Threads){
  UNPROTECT(2);
  return(Ans);
 }
+
