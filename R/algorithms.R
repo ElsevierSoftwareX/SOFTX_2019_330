@@ -142,4 +142,3 @@ NJMIM<-function(X,Y,k=3,threads=0)
 #' @export
 JIM<-function(X,Y,k=3,threads=0)
  .Call(C_JIM,X,Y,as.integer(k),as.integer(threads))
-
