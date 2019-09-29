@@ -30,8 +30,6 @@ Then, it greedily adds attribute \eqn{X} with a maximal value of the following c
 where \eqn{S} is the set of already selected attributes.
 }
 \note{
-CMIM is identical to the Informative Fragments (IF) method.
-
 The method requires input to be discrete to use empirical estimators of distribution, and, consequently, information gain or entropy.
 To allow smoother user experience, praznik automatically coerces non-factor vectors in inputs, which requires additional time, memory and may yield confusing results -- the best practice is to convert data to factors prior to feeding them in this function.
 Real attributes are cut into about 10 equally-spaced bins, following the heuristic often used in literature.

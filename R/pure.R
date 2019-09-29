@@ -121,6 +121,30 @@ pureNJMIM<-function(X,Y,k=3){
  )
 }
 
+pureCMI<-function(X,Y,k=3){
+ nX<-names(X)
+ X<-data.frame(X)
+ ascores<-apply(X,2,mutinfo,Y)
+ selection<-names(which.max(ascores))
+ Z<-X[,which.max(ascores)]
+ X<-X[,-which.max(ascores),drop=FALSE]
+ fscores<-max(ascores)
+ if(k>1) for(e in 1:(k-1)){
+  ascores<-cmiScores(X,Y,Z)
+  if(max(ascores)==0) break
+
+  selection<-c(selection,names(which.max(ascores)))
+  fscores<-c(fscores,max(ascores))
+
+  Z<-mergef(Z,X[,which.max(ascores)])
+  X<-X[,-which.max(ascores),drop=FALSE]
+ }
+ list(
+  selection=setNames(match(selection,nX),selection),
+  score=setNames(fscores,selection)
+ )
+}
+
 pureJMI<-function(X,Y,k=3){
  nX<-names(X)
  X<-data.frame(X)

@@ -22,7 +22,7 @@ A numerical vector with conditional mutual information scores, with names copied
 }
 \description{
 Calculates mutual information between each attributes and the decision, that is
-\deqn{I(X,Y|Z).}
+\deqn{I(X;Y|Z).}
 }
 \note{
 The method requires input to be discrete to use empirical estimators of distribution, and, consequently, information gain or entropy.
