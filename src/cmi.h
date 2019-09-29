@@ -232,7 +232,7 @@ SEXP C_CMI(SEXP X,SEXP Y,SEXP K,SEXP Threads){
  int *cW=(int*)R_alloc(sizeof(int),n);
  int *cYW=(int*)R_alloc(sizeof(int),n);
  int *yw2w=(int*)R_alloc(sizeof(int),n);
- int nyw=fillHt(hta[0],n,ny,y,nw,w,yw,cY/*TODO: NULL*/,cW,1);
+ int nyw=fillHt(hta[0],n,ny,y,nw,w,yw,NULL,cW,1);
  mixCountsHt(hta[0],cYW);
  transHt(hta[0],NULL,yw2w);
 

@@ -31,10 +31,12 @@ MIM<-function(X,Y,k=3,threads=0)
 CMIM<-function(X,Y,k=3,threads=0)
  .Call(C_CMIM,X,Y,as.integer(k),as.integer(threads))
 
-#TODO: Docs vvv
-
 #' Conditional mutual information maximisation filter
 #'
+#' The method starts with an attribute of a maximal mutual information with the decision \eqn{Y}.
+#' Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
+#' \deqn{J(X)=I(X;Y|S),}
+#' where \eqn{S} is the set of already selected attributes.
 #' @template input
 #' @template y
 #' @template k

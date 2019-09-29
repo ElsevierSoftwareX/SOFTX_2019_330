@@ -24,7 +24,10 @@ Names of both vectors will correspond to the names of features in \code{X}.
 Both vectors will be at most of a length \code{k}, as the selection may stop sooner, even during initial selection, in which case both vectors will be empty.
 }
 \description{
-Conditional mutual information maximisation filter
+The method starts with an attribute of a maximal mutual information with the decision \eqn{Y}.
+Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
+\deqn{J(X)=I(X;Y|S),}
+where \eqn{S} is the set of already selected attributes.
 }
 \note{
 The method requires input to be discrete to use empirical estimators of distribution, and, consequently, information gain or entropy.
