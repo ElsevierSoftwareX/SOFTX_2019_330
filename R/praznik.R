@@ -80,4 +80,5 @@ NULL
 #' @format A list with two elements, \code{X} containing a data frame with predictors, and \code{Y}, the decision. 
 #' Features are in the same order as in the original data; the names of relevant ones start with \code{Rel}, while of irrelevant ones with \code{Irr}.
 #' @source \url{https://archive.ics.uci.edu/ml/datasets/Madelon}
+#' @usage data(MadelonD)
 "MadelonD"
