@@ -98,7 +98,7 @@ uint32_t static inline fillHtOne(struct ht *Q,int N,int *in,int *out,int mixOff)
  for(int e=0;e<N;e++){
   if(in[e]==NA_INTEGER) error("NA values are not allowed");
   uint64_t _ab=(uint64_t)(in[e]);
-  uint32_t hab=_ab%N;//TODO: Better hash?
+  uint32_t hab=_ab%N;
 
   struct hte **E;
   for(E=Q->map+hab;E[0] && E[0]->ab!=_ab;E=&(E[0]->nxt));

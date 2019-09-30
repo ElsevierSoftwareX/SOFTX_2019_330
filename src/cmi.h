@@ -1,12 +1,4 @@
-enum cmi_jmi_mode {cjmCMI=791,cjmJMI=792,cjmNJMI=793};
-
-//TODO: Drop CMI stuff from here, and migrate this to separate file, jmi.h
-SEXP C_cmi_jmi(SEXP X,SEXP Y,SEXP Z,SEXP Mode,SEXP Threads){
- if(length(Mode)!=1) error("Invalid mode");
- int mode=INTEGER(Mode)[0];
- if(mode!=cjmCMI && mode!=cjmJMI && mode!=cjmNJMI)
-  error("Invalid mode"); 
-
+SEXP jmi(SEXP X,SEXP Y,SEXP Z,SEXP Threads,int nrm){
  int n,m,ny,*y,nz,*z,*nx,**x,nt;
  struct ht **hta;
  prepareInput(X,Y,R_NilValue,Threads,&hta,&n,&m,NULL,&y,&ny,&x,&nx,&nt);
@@ -18,14 +10,8 @@ SEXP C_cmi_jmi(SEXP X,SEXP Y,SEXP Z,SEXP Mode,SEXP Threads){
   *cY=(int*)R_alloc(sizeof(int),n),
   *xzc=(int*)R_alloc(sizeof(int),n*nt);
 
- double scoreOff;
- {
-  //Calculate I(Y;Z), which is a constant factor for CMI
-  int *cZ=cXZc;
-  //This is always needed for cY
-  fillHt(*hta,n,ny,y,nz,z,NULL,cY,cZ,0);
-  scoreOff=(mode==cjmCMI)?-miHt(*hta,cY,cZ):0.;
- }
+ for(int e=0;e<ny;e++) cY[e]=0;
+ for(int e=0;e<n;e++) cY[y[e]-1]++;
  
  SEXP Ans=PROTECT(allocVector(REALSXP,m));
  double *score=REAL(Ans);
@@ -39,14 +25,8 @@ SEXP C_cmi_jmi(SEXP X,SEXP Y,SEXP Z,SEXP Mode,SEXP Threads){
    //Mix X and Z
    int nxz=fillHt(ht,n,nz,z,nx[e],x[e],xz,NULL,NULL,1);
    fillHt(ht,n,ny,y,nxz,xz,NULL,NULL,cXZ,0);
-   // I(X;Y|Z)=I(Y;X,Z)-I(Y;Z)
-   if(mode!=cjmNJMI){
-    //CMI or JMI=I(Y;X,Z)
-    score[e]=miHt(ht,cY,cXZ)+scoreOff;
-   }else{
-    //NJMI (i.e. DISR-like score)=I(Y;X,Z)/H(X,Y,Z)
-    score[e]=nmiHt(ht,cY,cXZ);
-   }
+   if(nrm) score[e]=nmiHt(ht,cY,cXZ); 
+    else score[e]=miHt(ht,cY,cXZ);
   }
  }
  //Copy attribute names
@@ -54,6 +34,14 @@ SEXP C_cmi_jmi(SEXP X,SEXP Y,SEXP Z,SEXP Mode,SEXP Threads){
  
  UNPROTECT(1);
  return(Ans);
+}
+
+SEXP C_jmi(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
+ return(jmi(X,Y,Z,Threads,0));
+}
+
+SEXP C_njmi(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
+ return(jmi(X,Y,Z,Threads,1));
 }
 
 SEXP C_cmi(SEXP X,SEXP Y,SEXP Z,SEXP Threads){

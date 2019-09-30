@@ -90,7 +90,7 @@ cmiMatrix<-function(X,Z,zeroDiag=TRUE,threads=0)
 #' jmiScores(iris[,-5],iris$Species,iris$Sepal.Length)
 #' @export
 jmiScores<-function(X,Y,Z,threads=0)
- .Call(C_cmi_jmi,X,Y,Z,792L,as.integer(threads))
+ .Call(C_jmi,X,Y,Z,as.integer(threads))
 
 #' Joint mutual information matrix
 #'
@@ -118,7 +118,7 @@ jmiMatrix<-function(X,Z,zeroDiag=TRUE,threads=0)
 #' njmiScores(iris[,-5],iris$Species,iris$Sepal.Length)
 #' @export
 njmiScores<-function(X,Y,Z,threads=0)
- .Call(C_cmi_jmi,X,Y,Z,793L,as.integer(threads))
+ .Call(C_njmi,X,Y,Z,as.integer(threads))
 
 #' Normalised joint mutual information matrix
 #'
