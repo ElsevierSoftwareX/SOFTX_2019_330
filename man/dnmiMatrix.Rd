@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{dnmiMatrix}
 \alias{dnmiMatrix}
-\title{Calculate directed normalised mutual information between all feature pairs}
+\title{Directional normalised mutual information matrix}
 \usage{
 dnmiMatrix(X, zeroDiag = TRUE, threads = 0)
 }
@@ -18,7 +18,7 @@ dnmiMatrix(X, zeroDiag = TRUE, threads = 0)
 A numerical matrix with scores, with row and column names copied from \code{X}.
 }
 \description{
-Calculates mutual information between each two attributes, that is
+Calculates directed normalised mutual information between each two features, that is
 \deqn{\frac{I(X_i,X_j)}{H(X_j)}.}
 }
 \note{

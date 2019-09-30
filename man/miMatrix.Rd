@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{miMatrix}
 \alias{miMatrix}
-\title{Calculate mutual information between all feature pairs}
+\title{Mutual information matrix}
 \usage{
 miMatrix(X, zeroDiag = TRUE, threads = 0)
 }
@@ -18,7 +18,7 @@ miMatrix(X, zeroDiag = TRUE, threads = 0)
 A numerical matrix with scores, with row and column names copied from \code{X}.
 }
 \description{
-Calculates mutual information between each two attributes, that is
+Calculates mutual information between each two features, that is
 \deqn{I(X_i,X_j).}
 }
 \note{

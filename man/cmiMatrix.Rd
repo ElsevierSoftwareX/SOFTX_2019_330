@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{cmiMatrix}
 \alias{cmiMatrix}
-\title{Calculate conditional mutual information between all feature pairs given other feature}
+\title{Conditional mutual information matrix}
 \usage{
 cmiMatrix(X, Z, zeroDiag = TRUE, threads = 0)
 }
@@ -10,7 +10,7 @@ cmiMatrix(X, Z, zeroDiag = TRUE, threads = 0)
 \item{X}{Attribute table, given as a data frame with either factors (preferred), booleans, integers (treated as categorical) or reals (which undergo automatic categorisation; see below for details).
 \code{NA}s are not allowed.}
 
-\item{Z}{Condition; should be given as a factor, but other options are accepted, as for attributes.}
+\item{Z}{Condition; should be given as a factor, but other options are accepted, as for features.}
 
 \item{zeroDiag}{Boolean flag, whether the diagonal should be filled with zeroes or with feature entropies.}
 
@@ -20,7 +20,7 @@ cmiMatrix(X, Z, zeroDiag = TRUE, threads = 0)
 A numerical matrix with scores, with row and column names copied from \code{X}.
 }
 \description{
-Calculates mutual information between each two attributes, that is
+Calculates conditional mutual information between each two features given another one, that is
 \deqn{I(X_i;X_j|Z).}
 }
 \note{

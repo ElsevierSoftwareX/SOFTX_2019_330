@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{miScores}
 \alias{miScores}
-\title{Calculate mutual information of all features}
+\title{Mutual information scores}
 \usage{
 miScores(X, Y, threads = 0)
 }
@@ -19,7 +19,7 @@ miScores(X, Y, threads = 0)
 A numerical vector with mutual information scores, with names copied from \code{X}.
 }
 \description{
-Calculates mutual information between each attribute and the decision, that is
+Calculates mutual information between each feature and the decision, that is
 \deqn{I(X,Y).}
 }
 \note{

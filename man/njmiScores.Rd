@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{njmiScores}
 \alias{njmiScores}
-\title{Calculate normalised joint mutual information of all features}
+\title{Normalised joint mutual information scores}
 \usage{
 njmiScores(X, Y, Z, threads = 0)
 }
@@ -13,7 +13,7 @@ njmiScores(X, Y, Z, threads = 0)
 \item{Y}{Decision attribute; should be given as a factor, but other options are accepted, exactly like for attributes.
 \code{NA}s are not allowed.}
 
-\item{Z}{Other vector; should be given as a factor, but other options are accepted, as for attributes.}
+\item{Z}{Other vector; should be given as a factor, but other options are accepted, as for features.}
 
 \item{threads}{Number of threads to use; default value, 0, means all available to OpenMP.}
 }
@@ -21,7 +21,7 @@ njmiScores(X, Y, Z, threads = 0)
 A numerical vector with the normalised joint mutual information scores, with names copied from \code{X}.
 }
 \description{
-Calculated normalised mutual information between each attribute joint with some other vector \code{Z} with the decision, that is
+Calculated normalised mutual information between each feature joint with some other vector \code{Z} and the decision, that is
 \deqn{\frac{I(X,Z;Y)}{H(X,Y,Z)}.}
 This is the same as in the criterion used by \code{\link{DISR}} and \code{\link{NJMIM}}.
 }

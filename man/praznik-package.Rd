@@ -54,6 +54,9 @@ The package also provides functions for scoring features.
 \code{\link{njmiScores}} returns
 \deqn{\frac{I(X,Z;Y)}{H(X,Y,Z)}.}
 
+These function have also their \code{*Matrix} counterparts, which efficiently build a matrix of scores between all pairs of features.
+This is especially useful for network inference tasks.
+
 Estimation of mutual information and its generalisations is a hard task; still, praznik aims at speed and simplicity and hence only offers basic, maximum likelihood estimator applicable on discrete data.
 For convenience, praznik automatically and silently coerces non-factor inputs into about ten equally-spaced bins, following the heuristic often used in literature.
 
@@ -78,6 +81,6 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Miron B. Kursa \email{M.Kursa@icm.edu.pl} (0000-0001-7672-648X)
+\strong{Maintainer}: Miron B. Kursa \email{m@mbq.me} (0000-0001-7672-648X)
 
 }
