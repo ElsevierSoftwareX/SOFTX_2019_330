@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{impScores}
 \alias{impScores}
-\title{Calculate Gini impurity scores of all features}
+\title{Gini impurity scores}
 \usage{
 impScores(X, Y, threads = 0)
 }
@@ -19,7 +19,7 @@ impScores(X, Y, threads = 0)
 A numerical vector with Gini impurity scores, with names copied from \code{X}.
 }
 \description{
-Calculates Gini impurity between each attribute and the decision, that is
+Calculates Gini impurity between each feature and the decision, that is
 \deqn{G(X;Y)=\sum_{xy} \frac{p_{xy}^2}{p_x}-\sum_y p_y^2.}
 }
 \note{

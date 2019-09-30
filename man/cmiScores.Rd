@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{cmiScores}
 \alias{cmiScores}
-\title{Calculate conditional mutual information of all features}
+\title{Conditional mutual information scores}
 \usage{
 cmiScores(X, Y, Z, threads = 0)
 }
@@ -13,7 +13,7 @@ cmiScores(X, Y, Z, threads = 0)
 \item{Y}{Decision attribute; should be given as a factor, but other options are accepted, exactly like for attributes.
 \code{NA}s are not allowed.}
 
-\item{Z}{Condition; should be given as a factor, but other options are accepted, as for attributes.}
+\item{Z}{Condition; should be given as a factor, but other options are accepted, as for features.}
 
 \item{threads}{Number of threads to use; default value, 0, means all available to OpenMP.}
 }
@@ -21,7 +21,7 @@ cmiScores(X, Y, Z, threads = 0)
 A numerical vector with conditional mutual information scores, with names copied from \code{X}.
 }
 \description{
-Calculates mutual information between each attributes and the decision, that is
+Calculates conditional mutual information between each features and the decision, that is
 \deqn{I(X;Y|Z).}
 }
 \note{
