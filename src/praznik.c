@@ -23,6 +23,7 @@
 
 //Feature selection algorithms
 
+#include "cmi.h"
 #include "cmim.h"
 #include "mim.h"
 #include "mrmr.h"
@@ -37,10 +38,11 @@
 
 //Feature scoring algorithms
 
-#include "mi.h"
-#include "cmi.h"
-#include "im.h"
-#include "h.h"
+#include "mis.h"
+#include "cmis.h"
+#include "jmis.h"
+#include "ims.h"
+#include "hs.h"
 
 //Auxiliary
 

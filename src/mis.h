@@ -19,14 +19,14 @@ SEXP C_mi(SEXP X,SEXP Y,SEXP Threads){
  }
  //Copy attribute names
  setAttrib(Ans,R_NamesSymbol,getAttrib(X,R_NamesSymbol));
- 
+
  UNPROTECT(1);
  return(Ans);
 }
 
 enum nrm_mode {nmNone=0,nmSym=1,nmDirected=2};
 
-SEXP static inline miMatrix_gen(SEXP X,SEXP Diag,SEXP Threads,enum nrm_mode mode){
+SEXP miMatrix(SEXP X,SEXP Diag,SEXP Threads,enum nrm_mode mode){
  int n,m,*nx,**x,nt;
  struct ht **hta;
  prepareInput(X,R_NilValue,R_NilValue,Threads,&hta,&n,&m,NULL,NULL,NULL,&x,&nx,&nt);
@@ -67,19 +67,19 @@ SEXP static inline miMatrix_gen(SEXP X,SEXP Diag,SEXP Threads,enum nrm_mode mode
  SET_VECTOR_ELT(dimnames,0,getAttrib(X,R_NamesSymbol));
  SET_VECTOR_ELT(dimnames,1,getAttrib(X,R_NamesSymbol));
  setAttrib(Ans,R_DimNamesSymbol,dimnames);
- 
+
  UNPROTECT(2);
  return(Ans);
 }
 
 SEXP C_miMatrix(SEXP X,SEXP Diag,SEXP Threads){
- return(miMatrix_gen(X,Diag,Threads,nmNone));
+ return(miMatrix(X,Diag,Threads,nmNone));
 }
 
 SEXP C_nmiMatrix(SEXP X,SEXP Diag,SEXP Threads){
- return(miMatrix_gen(X,Diag,Threads,nmSym));
+ return(miMatrix(X,Diag,Threads,nmSym));
 }
 
 SEXP C_dnmiMatrix(SEXP X,SEXP Diag,SEXP Threads){
- return(miMatrix_gen(X,Diag,Threads,nmDirected));
+ return(miMatrix(X,Diag,Threads,nmDirected));
 }
