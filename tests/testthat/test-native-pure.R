@@ -23,6 +23,7 @@ for(algo in algos){
 
  for(algo in algos){
   test_that(sprintf("Native %s works like pure %s with truncation",algo,algo),{
+   if(.Machine$sizeof.pointer!=8) skip("Unstable on i386")
    do.call(sprintf("pure%s",algo),input)->pure
    do.call(algo,input)->native
    expect_equal(pure,native)
