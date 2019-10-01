@@ -4,7 +4,7 @@
 \alias{EJMI}
 \title{Ensemble joint mutual information filter}
 \usage{
-EJMI(X, Y, k = 5, n = 100, p = exp(-1), threads = 0)
+EJMI(X, Y, k = 5, n = 100, p = exp(-1), threads = 0, alt = FALSE)
 }
 \arguments{
 \item{X}{Attribute table, given as a data frame with either factors (preferred), booleans, integers (treated as categorical) or reals (which undergo automatic categorisation; see below for details).
@@ -18,10 +18,11 @@ Must not exceed \code{ncol(X)}.}
 
 \item{n}{Ensemble size}
 
-\item{p}{Probability of investigating an attribute.
-When 1, ensemble degenerates into regular method.}
+\item{p}{Probability of investigating an attribute.}
 
 \item{threads}{Number of threads to use; default value, 0, means all available to OpenMP.}
+
+\item{alt}{If \code{TRUE}, features are eliminated once, if \code{FALSE} in each iteration.}
 }
 \value{
 A list with two elements: \code{selection}, a vector of indices of the selected features in the selection order, and \code{score}, a vector of corresponding feature scores.

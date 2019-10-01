@@ -149,10 +149,14 @@ JIM<-function(X,Y,k=3,threads=0)
 #' @template k
 #' @param n Ensemble size
 #' @param p Probability of investigating an attribute.
-#'  When 1, ensemble degenerates into regular method.
+#' @param alt If \code{TRUE}, features are eliminated once, if \code{FALSE} in each iteration.
 #' @template output
 #' @examples data(MadelonD)
 #' EJMI(MadelonD$X,MadelonD$Y,20,100)
 #' @export
-EJMI<-function(X,Y,k=5,n=100,p=exp(-1),threads=0)
- .Call(C_EJMI,X,Y,as.integer(k),as.integer(n),as.numeric(p),as.integer(threads))
+EJMI<-function(X,Y,k=5,n=100,p=exp(-1),threads=0,alt=FALSE)
+ if(!alt){
+  .Call(C_EJMI,X,Y,as.integer(k),as.integer(n),as.numeric(p),as.integer(threads))
+ }else{
+  .Call(C_EJMI2,X,Y,as.integer(k),as.integer(n),as.numeric(p),as.integer(threads))
+ }
