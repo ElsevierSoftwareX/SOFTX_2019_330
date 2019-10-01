@@ -50,15 +50,6 @@ test_that("positive-only MRMR gives no negative scores",{
  expect_true(all(ans$score>0))
 })
 
-test_that("mi works like pure mi",{
- mutinfo<-function(x,y)
-  .Call(C_getMi,factor(x),factor(y))
- expect_equal(
-  apply(X,2,mutinfo,Y),
-  miScores(X,Y)
- )
-})
-
 test_that("cmi works like pure cmi",{
  condmutinfo<-function(x,y,z){
   unique(data.frame(x,y,z))->uxyz
