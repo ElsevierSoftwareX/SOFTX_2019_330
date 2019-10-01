@@ -21,13 +21,13 @@ Must not exceed \code{ncol(X)}.}
 \value{
 A list with two elements: \code{selection}, a vector of indices of the selected features in the selection order, and \code{score}, a vector of corresponding feature scores.
 Names of both vectors will correspond to the names of features in \code{X}.
-Both vectors will either have a length \code{k} or zero, when all features turn out to have zero mutual information with the decision.
+Both vectors will be at most of a length \code{k}, as the selection may stop sooner, even during initial selection, in which case both vectors will be empty.
 }
 \description{
-The method starts with an attribute of a maximal impurity gain with the decision \eqn{Y}.
-Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
+The method starts with a feature of a maximal impurity gain with the decision \eqn{Y}.
+Then, it greedily adds feature \eqn{X} with a maximal value of the following criterion:
 \deqn{J(X)=\sum_{W\in S} G(X,W;Y),}
-where \eqn{S} is the set of already selected attributes, and
+where \eqn{S} is the set of already selected features, and
 \deqn{G(X;Y)=\sum_{xy}\frac{p_{xy}^2}{p_x}-\sum_{y} p_y^2}
 is the Gini impurity gain from partitioning \eqn{Y} according to \eqn{X}.
 }

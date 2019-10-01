@@ -21,17 +21,16 @@ Must not exceed \code{ncol(X)}.}
 \value{
 A list with two elements: \code{selection}, a vector of indices of the selected features in the selection order, and \code{score}, a vector of corresponding feature scores.
 Names of both vectors will correspond to the names of features in \code{X}.
-Both vectors will be at most of a length \code{k}, as the selection will stop as soon as all the remaining features will have a score of zero.
-This may happen during initial selection, in which case both vectors will be empty.
+Both vectors will be at most of a length \code{k}, as the selection may stop sooner, even during initial selection, in which case both vectors will be empty.
 }
 \description{
-The method starts with an attribute of a maximal mutual information with the decision \eqn{Y}.
-Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
+The method starts with a feature of a maximal mutual information with the decision \eqn{Y}.
+Then, it greedily adds feature \eqn{X} with a maximal value of the following criterion:
 \deqn{J(X)=\min_{W\in S} I(X,W;Y),}
-where \eqn{S} is the set of already selected attributes.
+where \eqn{S} is the set of already selected features.
 }
 \note{
-\code{\link{NJMIM}} is a normalised version of JMIM; \code{\link{JMI}} and \code{\link{DISR}} are modifications of JMIM and NJMIM in which a sum of joint information over already selected attributes is used instead of a minimum.
+\code{\link{NJMIM}} is a normalised version of JMIM; \code{\link{JMI}} and \code{\link{DISR}} are modifications of JMIM and NJMIM in which a sum of joint information over already selected features is used instead of a minimum.
 
 The method requires input to be discrete to use empirical estimators of distribution, and, consequently, information gain or entropy.
 To allow smoother user experience, praznik automatically coerces non-factor vectors in inputs, which requires additional time, memory and may yield confusing results -- the best practice is to convert data to factors prior to feeding them in this function.

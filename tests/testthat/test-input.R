@@ -127,14 +127,10 @@ test_that("NAs and other quirks are caught",{
  expect_error(MIM(X,iris$Species,1),"NA values are not allowed")
 })
 
-test_that("CMI scorer throws bad Z size",{
+test_that("scorers throws bad Z size",{
  expect_error(cmiScores(iris[,-5],iris[,5],1:10),"Z vector size mismatch")
-})
-
-test_that("CMI C code throws on bad mode",{
- expect_error(.Call(C_cmi_jmi,NULL,NULL,NULL,9L,0L),"Invalid mode")
- expect_error(.Call(C_cmi_jmi,NULL,NULL,NULL,(791:792),0L),"Invalid mode")
- expect_error(.Call(C_cmi_jmi,NULL,NULL,NULL,-7.3,0L))
+ expect_error(jmiScores(iris[,-5],iris[,5],1:10),"Z vector size mismatch")
+ expect_error(njmiScores(iris[,-5],iris[,5],1:10),"Z vector size mismatch")
 })
 
 test_that("threads argument is processed well",{

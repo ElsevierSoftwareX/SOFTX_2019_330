@@ -21,17 +21,16 @@ Must not exceed \code{ncol(X)}.}
 \value{
 A list with two elements: \code{selection}, a vector of indices of the selected features in the selection order, and \code{score}, a vector of corresponding feature scores.
 Names of both vectors will correspond to the names of features in \code{X}.
-Both vectors will be at most of a length \code{k}, as the selection will stop as soon as all the remaining features will have a score of zero.
-This may happen during initial selection, in which case both vectors will be empty.
+Both vectors will be at most of a length \code{k}, as the selection may stop sooner, even during initial selection, in which case both vectors will be empty.
 }
 \description{
-The method starts with an attribute of a maximal mutual information with the decision \eqn{Y}.
-Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
+The method starts with a feature of a maximal mutual information with the decision \eqn{Y}.
+Then, it greedily adds feature \eqn{X} with a maximal value of the following criterion:
 \deqn{J(X)=\min_{W\in S} \frac{I(X,W;Y)}{H(X,W,Y)},}
-where \eqn{S} is the set of already selected attributes.
+where \eqn{S} is the set of already selected features.
 }
 \note{
-NJMIM is a normalised version of \code{\link{JMIM}}; \code{\link{JMI}} and \code{\link{DISR}} are modifications of JMIM and NJMIM in which a sum of joint information over already selected attributes is used instead of a minimum.
+NJMIM is a normalised version of \code{\link{JMIM}}; \code{\link{JMI}} and \code{\link{DISR}} are modifications of JMIM and NJMIM in which a sum of joint information over already selected features is used instead of a minimum.
 It stops returning features when the best score reaches 0.
 
 The method requires input to be discrete to use empirical estimators of distribution, and, consequently, information gain or entropy.

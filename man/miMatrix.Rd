@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{miMatrix}
 \alias{miMatrix}
-\title{Calculate mutual information between all feature pairs}
+\title{Mutual information matrix}
 \usage{
 miMatrix(X, zeroDiag = TRUE, threads = 0)
 }
@@ -15,10 +15,10 @@ miMatrix(X, zeroDiag = TRUE, threads = 0)
 \item{threads}{Number of threads to use; default value, 0, means all available to OpenMP.}
 }
 \value{
-A numerical matrix with mutual information scores, with row and column names copied from \code{X}.
+A numerical matrix with scores, with row and column names copied from \code{X}.
 }
 \description{
-Calculates mutual information between each two attributes, that is
+Calculates mutual information between each two features, that is
 \deqn{I(X_i,X_j).}
 }
 \note{

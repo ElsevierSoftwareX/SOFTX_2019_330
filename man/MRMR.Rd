@@ -4,7 +4,8 @@
 \alias{MRMR}
 \title{Minimum redundancy maximal relevancy filter}
 \usage{
-MRMR(X, Y, k = 3, threads = 0)
+MRMR(X, Y, k = if (positive) ncol(X) else 3, positive = FALSE,
+  threads = 0)
 }
 \arguments{
 \item{X}{Attribute table, given as a data frame with either factors (preferred), booleans, integers (treated as categorical) or reals (which undergo automatic categorisation; see below for details).
@@ -16,18 +17,21 @@ MRMR(X, Y, k = 3, threads = 0)
 \item{k}{Number of attributes to select.
 Must not exceed \code{ncol(X)}.}
 
+\item{positive}{If true, algorithm won't return features with negative scores (i.e., with redundancy term higher than the relevance therm).
+In that case, \code{k} controls the maximal number of returned features, and is set to `ncol(X)` by default.}
+
 \item{threads}{Number of threads to use; default value, 0, means all available to OpenMP.}
 }
 \value{
 A list with two elements: \code{selection}, a vector of indices of the selected features in the selection order, and \code{score}, a vector of corresponding feature scores.
 Names of both vectors will correspond to the names of features in \code{X}.
-Both vectors will either have a length \code{k} or zero, when all features turn out to have zero mutual information with the decision.
+Both vectors will be at most of a length \code{k}, as the selection may stop sooner, even during initial selection, in which case both vectors will be empty.
 }
 \description{
-The method starts with an attribute of a maximal mutual information with the decision \eqn{Y}.
-Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
+The method starts with a feature of a maximal mutual information with the decision \eqn{Y}.
+Then, it greedily adds feature \eqn{X} with a maximal value of the following criterion:
 \deqn{J(X)=I(X;Y)-\frac{1}{|S|}\sum_{W\in S} I(X;W),}
-where \eqn{S} is the set of already selected attributes.
+where \eqn{S} is the set of already selected features.
 }
 \note{
 The method requires input to be discrete to use empirical estimators of distribution, and, consequently, information gain or entropy.

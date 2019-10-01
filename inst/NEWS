@@ -1,3 +1,10 @@
+Changes in 7.0:
+ - Information score matrices.
+ - New conditional mutual estimation engine.
+ - CMI selection method.
+ - MRMR can now stop on negative score.
+ - Pure implementations are now based on native scorers.
+
 Changes in 6.0:
  - Defunct setOmpThreads removed.
  - Entropy scores function.

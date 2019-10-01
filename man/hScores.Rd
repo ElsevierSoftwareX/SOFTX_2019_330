@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{hScores}
 \alias{hScores}
-\title{Calculate entropy of all features}
+\title{Entropy scores}
 \usage{
 hScores(X, threads = 0)
 }
@@ -16,7 +16,7 @@ hScores(X, threads = 0)
 A numerical vector with entropy scores, with names copied from \code{X}.
 }
 \description{
-Calculates entropy of each attribute, that is
+Calculates entropy of each feature, that is
 \deqn{H(X).}
 }
 \note{

@@ -1,4 +1,4 @@
-# Pure R implementations of selection methods --- for testing only
+# Pure R implementations of selection methods 
 
 #' @importFrom stats setNames
 #' @importFrom utils tail
@@ -6,31 +6,8 @@
 mergef<-function(x,y)
  factor(as.numeric(y)*length(levels(x))+as.numeric(x))
 
-mutinfo<-function(x,y)
- .Call(C_getMi,factor(x),factor(y))
-
-nmutinfo<-function(x,y)
- .Call(C_getNmi,factor(x),factor(y))
-
-condmutinfo<-function(x,y,z)
- .Call(C_getMi,factor(x),factor(sprintf("%s%s",y,z)))-
- .Call(C_getMi,factor(x),factor(z))
-
-entro<-function(x){
- table(x)/length(x)->p
- sum(-ifelse(p>0,p*log(p),0))
-}
-
-cmutinfo<-function(a,b,c){
- a<-factor(a)
- b<-factor(b)
- c<-factor(c)
- bc<-mergef(b,c)
- mutinfo(a,bc)-mutinfo(a,c)
-}
-
 pureMIM<-function(X,Y,k=3){
- apply(X,2,mutinfo,Y)->mim
+ miScores(X,Y)->mim
  sort(mim,decreasing=TRUE)[1:k]->ans
  ans[ans>0]->ans
  list(
@@ -42,7 +19,7 @@ pureMIM<-function(X,Y,k=3){
 pureCMIM<-function(X,Y,k=3){
  nX<-names(X)
  X<-data.frame(X)
- ascores<-apply(X,2,mutinfo,Y)
+ ascores<-miScores(X,Y)
  selection<-names(which.max(ascores))
  fscores<-max(ascores)
  #Conceptually wrong, but as defined by Fleuret
@@ -51,7 +28,7 @@ pureCMIM<-function(X,Y,k=3){
   factor(X[,tail(selection,1)])->w
   scores[colnames(X)!=tail(selection,1)]->scores
   X[,colnames(X)!=tail(selection,1),drop=FALSE]->X
-  newScores<-apply(X,2,function(xx) cmutinfo(xx,Y,w))
+  newScores<-cmiScores(X,Y,w)
   scores<-pmin(
    newScores,  
    scores
@@ -70,7 +47,7 @@ pureCMIM<-function(X,Y,k=3){
 pureJMIM<-function(X,Y,k=3){
  nX<-names(X)
  X<-data.frame(X)
- ascores<-apply(X,2,mutinfo,Y)
+ ascores<-miScores(X,Y)
  selection<-names(which.max(ascores))
  fscores<-max(ascores)
  scores<-rep(Inf,ncol(X))
@@ -78,7 +55,7 @@ pureJMIM<-function(X,Y,k=3){
   factor(X[,tail(selection,1)])->x
   scores[colnames(X)!=tail(selection,1)]->scores
   X[,colnames(X)!=tail(selection,1),drop=FALSE]->X
-  newScores<-apply(X,2,function(xx) mutinfo(mergef(x,factor(xx)),Y))
+  newScores<-jmiScores(X,Y,x) 
   scores<-pmin(
    newScores,
    scores
@@ -97,7 +74,7 @@ pureJMIM<-function(X,Y,k=3){
 pureNJMIM<-function(X,Y,k=3){
  nX<-names(X)
  X<-data.frame(X)
- ascores<-apply(X,2,mutinfo,Y)
+ ascores<-miScores(X,Y)
  selection<-names(which.max(ascores))
  fscores<-max(ascores)
  scores<-rep(Inf,ncol(X))
@@ -105,7 +82,7 @@ pureNJMIM<-function(X,Y,k=3){
   factor(X[,tail(selection,1)])->x
   scores[colnames(X)!=tail(selection,1)]->scores
   X[,colnames(X)!=tail(selection,1),drop=FALSE]->X
-  newScores<-apply(X,2,function(xx) nmutinfo(mergef(x,factor(xx)),Y))
+  newScores<-njmiScores(X,Y,x) 
   scores<-pmin(
    newScores,
    scores
@@ -121,10 +98,34 @@ pureNJMIM<-function(X,Y,k=3){
  )
 }
 
+pureCMI<-function(X,Y,k=3){
+ nX<-names(X)
+ X<-data.frame(X)
+ ascores<-miScores(X,Y)
+ selection<-names(which.max(ascores))
+ Z<-X[,which.max(ascores)]
+ X<-X[,-which.max(ascores),drop=FALSE]
+ fscores<-max(ascores)
+ if(k>1) for(e in 1:(k-1)){
+  ascores<-cmiScores(X,Y,Z)
+  if(max(ascores)==0) break
+
+  selection<-c(selection,names(which.max(ascores)))
+  fscores<-c(fscores,max(ascores))
+
+  Z<-mergef(Z,X[,which.max(ascores)])
+  X<-X[,-which.max(ascores),drop=FALSE]
+ }
+ list(
+  selection=setNames(match(selection,nX),selection),
+  score=setNames(fscores,selection)
+ )
+}
+
 pureJMI<-function(X,Y,k=3){
  nX<-names(X)
  X<-data.frame(X)
- ascores<-apply(X,2,mutinfo,Y)
+ ascores<-miScores(X,Y)
  selection<-names(which.max(ascores))
  fscores<-max(ascores)
  scores<-rep(0,ncol(X))
@@ -132,8 +133,7 @@ pureJMI<-function(X,Y,k=3){
   factor(X[,tail(selection,1)])->x
   scores[colnames(X)!=tail(selection,1)]->scores
   X[,colnames(X)!=tail(selection,1),drop=FALSE]->X
-  scores+apply(X,2,function(xx) mutinfo(mergef(x,factor(xx)),Y))->scores
-  if(max(scores)==0) break
+  scores<-scores+jmiScores(X,Y,x) 
 
   selection<-c(selection,names(which.max(scores)))
   fscores<-c(fscores,max(scores))
@@ -147,7 +147,7 @@ pureJMI<-function(X,Y,k=3){
 pureMRMR<-function(X,Y,k=3){
  nX<-names(X)
  X<-data.frame(X)
- rel<-apply(X,2,mutinfo,Y)
+ rel<-miScores(X,Y)
  red<-rep(0,ncol(X))
  selection<-names(which.max(rel))
  fscores<-max(rel)
@@ -157,7 +157,7 @@ pureMRMR<-function(X,Y,k=3){
   red[colnames(X)!=tail(selection,1)]->red
   X[,colnames(X)!=tail(selection,1),drop=FALSE]->X
 
-  apply(X,2,function(xx) mutinfo(x,factor(xx)))->nred
+  nred<-miScores(X,x)
   red<-red+nred;
   scores<-rel-red/e
 
@@ -173,7 +173,7 @@ pureMRMR<-function(X,Y,k=3){
 pureDISR<-function(X,Y,k=3){
  nX<-names(X)
  X<-data.frame(X)
- ascores<-apply(X,2,mutinfo,Y)
+ ascores<-miScores(X,Y)
  selection<-names(which.max(ascores))
  fscores<-max(ascores)
  rep(0,ncol(X))->scores
@@ -182,8 +182,7 @@ pureDISR<-function(X,Y,k=3){
   scores[colnames(X)!=tail(selection,1)]->scores
   X[,colnames(X)!=tail(selection,1),drop=FALSE]->X
   
-  scores+apply(X,2,function(xx) nmutinfo(mergef(x,factor(xx)),Y))->scores
-  if(max(scores)==0) break
+  scores<-scores+njmiScores(X,Y,x)
 
   selection<-c(selection,names(which.max(scores)))
   fscores<-c(fscores,max(scores))
@@ -194,10 +193,3 @@ pureDISR<-function(X,Y,k=3){
  )
 }
 
-pureImp<-function(X,Y){
- gi<-function(X,Y){
-  k<-(k<-table(X,Y))/sum(k)
-  sum(k^2/rowSums(k))-sum(colSums(k)^2)
- }
- apply(X,2,gi,Y)
-}

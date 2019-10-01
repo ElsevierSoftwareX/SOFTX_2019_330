@@ -23,6 +23,7 @@
 
 //Feature selection algorithms
 
+#include "cmi.h"
 #include "cmim.h"
 #include "mim.h"
 #include "mrmr.h"
@@ -41,10 +42,11 @@
 
 //Feature scoring algorithms
 
-#include "mi.h"
-#include "cmi.h"
-#include "im.h"
-#include "h.h"
+#include "mis.h"
+#include "cmis.h"
+#include "jmis.h"
+#include "ims.h"
+#include "hs.h"
 
 //Auxiliary
 
@@ -55,18 +57,24 @@
 #define CALLDEF(name, n)  {#name, (DL_FUNC) &name, n}
 static const R_CallMethodDef R_CallDef[]={
  CALLDEF(C_engineTest,2),
- CALLDEF(C_getMi,2),
- CALLDEF(C_getNmi,2),
  CALLDEF(C_CMIM,4),
+ CALLDEF(C_CMI,4),
  CALLDEF(C_JMI,4),
  CALLDEF(C_DISR,4),
  CALLDEF(C_JMIM,4),
  CALLDEF(C_NJMIM,4),
  CALLDEF(C_MIM,4),
- CALLDEF(C_MRMR,4),
+ CALLDEF(C_MRMR,5),
  CALLDEF(C_mi,3),
  CALLDEF(C_miMatrix,3),
- CALLDEF(C_cmi_jmi,5),
+ CALLDEF(C_jmi,4),
+ CALLDEF(C_njmi,4),
+ CALLDEF(C_cmi,4),
+ CALLDEF(C_cmiMatrix,4),
+ CALLDEF(C_jmiMatrix,4),
+ CALLDEF(C_njmiMatrix,4),
+ CALLDEF(C_nmiMatrix,3),
+ CALLDEF(C_dnmiMatrix,3),
  CALLDEF(C_im,3),
  CALLDEF(C_h,2),
  CALLDEF(C_JIM,4),
