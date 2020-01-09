@@ -12,3 +12,6 @@ kTransform(x)
 \description{
 Kendall transformation
 }
+\examples{
+kTransform(data.frame(Asc=1:3,Desc=3:1,Vsh=c(2,1,2)))
+}
