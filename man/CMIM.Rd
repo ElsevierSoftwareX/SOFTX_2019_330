@@ -24,10 +24,10 @@ Names of both vectors will correspond to the names of features in \code{X}.
 Both vectors will be at most of a length \code{k}, as the selection may stop sooner, even during initial selection, in which case both vectors will be empty.
 }
 \description{
-The method starts with an attribute of a maximal mutual information with the decision \eqn{Y}.
-Then, it greedily adds attribute \eqn{X} with a maximal value of the following criterion:
+The method starts with a feature of a maximal mutual information with the decision \eqn{Y}.
+Then, it greedily adds feature \eqn{X} with a maximal value of the following criterion:
 \deqn{J(X)=\min(I(X;Y),\min_{W\in S} I(X;Y|W)),}
-where \eqn{S} is the set of already selected attributes.
+where \eqn{S} is the set of already selected features.
 }
 \note{
 The method requires input to be discrete to use empirical estimators of distribution, and, consequently, information gain or entropy.

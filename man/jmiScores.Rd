@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{jmiScores}
 \alias{jmiScores}
-\title{Calculate joint mutual information of all features}
+\title{Joint mutual information scores}
 \usage{
 jmiScores(X, Y, Z, threads = 0)
 }
@@ -13,7 +13,7 @@ jmiScores(X, Y, Z, threads = 0)
 \item{Y}{Decision attribute; should be given as a factor, but other options are accepted, exactly like for attributes.
 \code{NA}s are not allowed.}
 
-\item{Z}{Other vector; should be given as a factor, but other options are accepted, as for attributes.}
+\item{Z}{Other vector; should be given as a factor, but other options are accepted, as for features.}
 
 \item{threads}{Number of threads to use; default value, 0, means all available to OpenMP.}
 }
@@ -21,7 +21,7 @@ jmiScores(X, Y, Z, threads = 0)
 A numerical vector with joint mutual information scores, with names copied from \code{X}.
 }
 \description{
-Calculated mutual information between each attribute joint with some other vector \code{Z} with the decision, that is
+Calculates joint mutual information between each feature joint with some other vector \code{Z} with the decision, that is
 \deqn{I(X,Z;Y).}
 This is the same as conditional mutual information between X and Y plus a constant that depends on Y and Z, that is
 \deqn{I(X,Z;Y)=I(X;Y|Z)+I(Y;Z).}

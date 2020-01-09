@@ -23,6 +23,7 @@ for(algo in algos){
 
  for(algo in algos){
   test_that(sprintf("Native %s works like pure %s with truncation",algo,algo),{
+   if(.Machine$sizeof.pointer!=8) skip("Unstable on i386")
    do.call(sprintf("pure%s",algo),input)->pure
    do.call(algo,input)->native
    expect_equal(pure,native)
@@ -36,6 +37,7 @@ for(algo in algos){
 
  for(algo in algos){
   test_that(sprintf("Native %s works like pure %s with spoiler",algo,algo),{
+   if(.Machine$sizeof.pointer!=8) skip("Unstable on i386")
    do.call(sprintf("pure%s",algo),input)->pure
    do.call(algo,input)->native
    expect_equal(pure,native)
@@ -49,6 +51,8 @@ test_that("positive-only MRMR gives no negative scores",{
 })
 
 test_that("mi works like pure mi",{
+ mutinfo<-function(x,y)
+  .Call(C_getMi,factor(x),factor(y))
  expect_equal(
   apply(X,2,mutinfo,Y),
   miScores(X,Y)
@@ -56,6 +60,18 @@ test_that("mi works like pure mi",{
 })
 
 test_that("cmi works like pure cmi",{
+ condmutinfo<-function(x,y,z){
+  unique(data.frame(x,y,z))->uxyz
+  data.frame(t(apply(uxyz,1,function(xyz){
+   c(
+    pxyz=mean(x==xyz[1] & y==xyz[2] & z==xyz[3]),
+    pxz=mean(x==xyz[1] & z==xyz[3]),
+    pyz=mean(y==xyz[2] & z==xyz[3]),
+    pz=mean(z==xyz[3])
+   )
+  })))->p
+  sum(with(p,pxyz*log(pxyz*pz/pxz/pyz)))
+ }
  Z<-factor((1:150)%%7)
  expect_equal(
   apply(X,2,condmutinfo,Y,Z),
@@ -75,6 +91,10 @@ test_that("cmi behaves properly",{
 })
 
 test_that("h behaves properly",{
+ entro<-function(x){
+  table(x)/length(x)->p
+  sum(-ifelse(p>0,p*log(p),0))
+ }
  expect_equal(
   hScores(X),
   apply(X,2,entro)
@@ -98,20 +118,26 @@ test_that("jmi behaves properly",{
   )
 })
 
+test_that("multithread tie breaking is stable",{
+ if(.Machine$sizeof.pointer!=8) skip("Unstable on i386")
+ for(met in sapply(algos,get))
+  expect_equal(
+   met(iris[,rep(1:4,10)],iris$Species,threads=2),
+   met(iris[,rep(1:4,10)],iris$Species,threads=1)
+  )
+})
+
+pureImp<-function(X,Y){
+ gi<-function(X,Y){
+  k<-(k<-table(X,Y))/sum(k)
+  sum(k^2/rowSums(k))-sum(colSums(k)^2)
+ }
+ apply(X,2,gi,Y)
+}
+
 test_that("impurity scores agree with pure",{
  expect_equal(impScores(X,Y),pureImp(X,Y))
 })
-
-if(.Machine$sizeof.pointer==8){
- test_that("multithread tie breaking is stable",{
-  mets<-c(MIM,JMIM,NJMIM,JMI,DISR,CMIM,MRMR,JIM)
-  for(met in mets)
-   expect_equal(
-    met(iris[,rep(1:4,10)],iris$Species,threads=2),
-    met(iris[,rep(1:4,10)],iris$Species,threads=1)
-   )
- })
-}
 
 test_that("JIM works",{
  data(MadelonD)
