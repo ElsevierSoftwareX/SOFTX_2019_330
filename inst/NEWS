@@ -1,3 +1,6 @@
+Changes in XX:
+ - Single vector can be given as the X argument.
+
 Changes in 7.0:
  - Information score matrices.
  - New conditional mutual estimation engine.

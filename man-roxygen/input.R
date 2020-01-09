@@ -1,4 +1,5 @@
 #' @param X Attribute table, given as a data frame with either factors (preferred), booleans, integers (treated as categorical) or reals (which undergo automatic categorisation; see below for details).
+#' Single vector will be interpreted as a data.frame with one column.
 #' \code{NA}s are not allowed.
 #' @param threads Number of threads to use; default value, 0, means all available to OpenMP.
 #' @note The method requires input to be discrete to use empirical estimators of distribution, and, consequently, information gain or entropy.
