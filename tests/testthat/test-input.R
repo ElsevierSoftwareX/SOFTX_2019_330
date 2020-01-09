@@ -26,6 +26,7 @@ test_that("X must be a data.frame is thrown",{
 
 test_that("No rows error is thrown",{
  expect_error(MIM(iris[0,-5],iris[0,5]),"X has no rows")
+ expect_error(hScores(numeric(0)),"X has a zero length")
 })
 
 test_that("Nameless data.frames work",{
@@ -106,8 +107,10 @@ test_that("X and Y must be only reals, booleans, integers or factors",{
   img=data.frame(A=1:5+3i),
   li=li
  )
- for(X in badX)
+ for(X in badX){
   expect_error(MIM(X,Y,1))
+  expect_error(hScores(X$A))
+ }
  for(Y in badX)
   expect_error(MIM(data.frame(A=Y),X$A,1))
 })
