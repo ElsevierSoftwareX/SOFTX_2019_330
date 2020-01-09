@@ -119,7 +119,6 @@ void prepareInput(SEXP X,SEXP Y,SEXP K,SEXP Threads,struct ht ***ht,int *n,int *
   }
  }else{
   (*x)[0]=convertSEXP(**ht,*n,X,*nx);
-  if(!(*x)[0]) error("Wrong X type");
  }
 }
 

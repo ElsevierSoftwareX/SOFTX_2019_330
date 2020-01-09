@@ -71,6 +71,16 @@ test_that("Magical cut works like R cut",{
   miScores(iris[,-5],iris$Species),
   miScores(data.frame(apply(iris[,-5],2,cut,10)),iris$Species)
  )
+ ii<-iris[c(1:14,100:112),]
+ expect_equal(
+  miScores(ii[,-5],ii$Species),
+  miScores(data.frame(apply(ii[,-5],2,cut,9)),ii$Species)
+ )
+ ii<-iris[c(1:3,101:103),]
+ expect_equal(
+  miScores(ii[,-5],ii$Species),
+  miScores(data.frame(apply(ii[,-5],2,cut,2)),ii$Species)
+ )
 })
 
 test_that("Zero-score features work",{
