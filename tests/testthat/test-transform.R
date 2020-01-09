@@ -32,14 +32,25 @@ test_that("Kendall transform handles various inputs",{
    "Unsupported"
   )
   expect_error(
+   kTransform(data.frame(a=letters,stringsAsFactors=FALSE)),
+   "Unsupported"
+  )
+  expect_error(
    kTransform(NULL),
    "Unsupported"
   )
-  eo3<-factor(c("<","<","<",">","=","<",">","=","<",">",">",">"),levels=c("<",">","="))
+  eo4<-factor(c("<","<","<",">","=","<",">","=","<",">",">",">"),levels=c("<",">","="))
+  eo3<-factor(c("<","<",">","<",">",">"),levels=c("<",">","="))
   eo2<-factor(c("<",">"),levels=c("<",">","="))
+  eona<-factor(c(NA,"<",NA,NA,">",NA),levels=c("<",">","="))
   expect_equal(kTransform(c(FALSE,TRUE)),eo2)
-  expect_equal(kTransform(c(1.1,2.2,2.2,3.3)),eo3)
-  expect_equal(kTransform(ordered(c("a","b","b","c"))),eo3)
+  expect_equal(kTransform(c(-Inf,0,Inf)),eo3)
+  expect_equal(kTransform(c(1.1,2.2,2.2,3.3)),eo4)
+  expect_equal(kTransform(c(1.1,NA,3.3)),eona)
+  expect_equal(kTransform(c(1.1,NaN,3.3)),eona)
+  expect_equal(kTransform(c(FALSE,NA,TRUE)),eona)
+  expect_equal(kTransform(c(0,NA,1)),eona)
+  expect_equal(kTransform(ordered(c("a","b","b","c"))),eo4)
 })
 
 test_that("Kendall transform sanity test",{
