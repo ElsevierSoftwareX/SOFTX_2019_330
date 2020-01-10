@@ -66,6 +66,36 @@ test_that("Crazy-double valued features work",{
  )
 })
 
+#Following https://gitlab.com/mbq/praznik/issues/23
+c(
+ "CMI","MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR",
+ "cmiMatrix","cmiScores","dnmiMatrix","hScores","impScores",
+ "jmiMatrix","jmiScores","miMatrix","miScores","njmiMatrix",
+ "njmiScores","nmiMatrix"
+)->algos
+for(algo in algos){
+ test_that(sprintf("Named vector X work with %s",algo),{
+  if(grepl("^h",algo)){
+   z<-do.call(algo,list(c(a=1,b=2,c=3)))
+  }else if(grepl("(^mi|^imp|^dnmi|^nmi)",algo)){
+   z<-do.call(algo,list(c(a=1,b=2,c=3),1:3))
+  }else if(grepl("(^cmi|^jmi|^njmi)",algo)){
+   z<-do.call(algo,list(c(a=1,b=2,c=3),1:3,3:1))
+  }else{  
+   z<-do.call(algo,list(c(a=1,b=2,c=3),1:3,k=1))
+  }
+  if(grepl("Matrix$",algo)){
+   expect_null(rownames(z))
+   expect_null(colnames(z))
+  }else if(grepl("Scores$",algo)){
+   expect_null(names(z))
+  }else{
+   expect_null(names(z$selection))
+   expect_null(names(z$score))
+  }
+ })
+}
+
 test_that("Magical cut works like R cut",{
  expect_equal(
   miScores(iris[,-5],iris$Species),
