@@ -8,6 +8,7 @@ njmiMatrix(X, Z, zeroDiag = TRUE, threads = 0)
 }
 \arguments{
 \item{X}{Attribute table, given as a data frame with either factors (preferred), booleans, integers (treated as categorical) or reals (which undergo automatic categorisation; see below for details).
+Single vector will be interpreted as a data.frame with one column.
 \code{NA}s are not allowed.}
 
 \item{Z}{Condition; should be given as a factor, but other options are accepted, as for features.}

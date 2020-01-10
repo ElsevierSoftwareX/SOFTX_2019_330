@@ -60,11 +60,23 @@ int *convertSEXP(struct ht *ht,int n,SEXP in,int *nout){
 }
 
 void prepareInput(SEXP X,SEXP Y,SEXP K,SEXP Threads,struct ht ***ht,int *n,int *m,int *k,int **y,int *ny,int ***x,int **nx,int *nt){
- if(!isFrame(X)) error("X must be a data.frame");
- *m=length(X);
- if(*m==0) error("Cannot select from a data.frame without columns");
- *n=length(VECTOR_ELT(X,0));
- if(*n==0) error("X has no rows");
+ int frame;
+ if(isFrame(X)){
+  frame=1;
+  *m=length(X);
+  if(*m==0) error("Cannot select from a data.frame without columns");
+  *n=length(VECTOR_ELT(X,0));
+  if(*n==0) error("X has no rows");
+ }else{
+  if(isFactor(X)||isLogical(X)||isReal(X)||isInteger(X)){
+   *m=1;
+   frame=0;
+   *n=length(X);
+   if(*n==0) error("X has a zero length");
+  }else{
+   error("X must be a data.frame or a vector");
+  }
+ }
  if(y && *n!=length(Y)) error("X and Y size mismatch");
 
  if(k){
@@ -96,12 +108,17 @@ void prepareInput(SEXP X,SEXP Y,SEXP K,SEXP Threads,struct ht ***ht,int *n,int *
  
  *nx=(int*)R_alloc(sizeof(int),*m);
  *x=(int**)R_alloc(sizeof(int*),*m);
- for(int e=0;e<*m;e++){
-  SEXP XX;
-  PROTECT(XX=VECTOR_ELT(X,e));
-  (*x)[e]=convertSEXP(**ht,*n,XX,(*nx)+e);
-  if(!(*x)[e]) error("Wrong X[,%d] type",e+1);
-  UNPROTECT(1);
+ if(frame){
+  for(int e=0;e<*m;e++){
+   SEXP XX;
+   //TODO: Are these needed?
+   PROTECT(XX=VECTOR_ELT(X,e));
+   (*x)[e]=convertSEXP(**ht,*n,XX,(*nx)+e);
+   if(!(*x)[e]) error("Wrong X[,%d] type",e+1);
+   UNPROTECT(1);
+  }
+ }else{
+  (*x)[0]=convertSEXP(**ht,*n,X,*nx);
  }
 }
 
