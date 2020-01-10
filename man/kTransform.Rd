@@ -7,7 +7,11 @@
 kTransform(x)
 }
 \arguments{
-\item{x}{Vector or data frame to be Kendall-transformed.}
+\item{x}{Vector or data frame to be Kendall-transformed; allowed feature types are numeric, integer (treated as numeric), ordered factor, logical and unordered factor with two or less levels.
+\code{NA} and non-finite values are allowed; \code{NaN} is treated as \code{NA}.}
+}
+\value{
+A transformed vector or data frame with transformed columns.
 }
 \description{
 Kendall transformation
