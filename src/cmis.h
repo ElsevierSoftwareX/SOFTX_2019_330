@@ -34,7 +34,8 @@ SEXP C_cmi(SEXP X,SEXP Y,SEXP Z,SEXP Threads){
   }
  }
  //Copy attribute names
- setAttrib(Ans,R_NamesSymbol,getAttrib(X,R_NamesSymbol));
+ if(isFrame(X))
+  setAttrib(Ans,R_NamesSymbol,getAttrib(X,R_NamesSymbol));
  
  UNPROTECT(1);
  return(Ans);
@@ -85,12 +86,15 @@ SEXP C_cmiMatrix(SEXP X,SEXP Z,SEXP Diag,SEXP Threads){
  }
 
  //Copy attribute names into both dimensions
- SEXP dimnames=PROTECT(allocVector(VECSXP,2));
- SET_VECTOR_ELT(dimnames,0,getAttrib(X,R_NamesSymbol));
- SET_VECTOR_ELT(dimnames,1,getAttrib(X,R_NamesSymbol));
- setAttrib(Ans,R_DimNamesSymbol,dimnames);
+ if(isFrame(X)){
+  SEXP dimnames=PROTECT(allocVector(VECSXP,2));
+  SET_VECTOR_ELT(dimnames,0,getAttrib(X,R_NamesSymbol));
+  SET_VECTOR_ELT(dimnames,1,getAttrib(X,R_NamesSymbol));
+  setAttrib(Ans,R_DimNamesSymbol,dimnames);
+  UNPROTECT(1);
+ }
  
- UNPROTECT(2);
+ UNPROTECT(1);
  return(Ans);
 }
 

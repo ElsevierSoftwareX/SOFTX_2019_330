@@ -209,9 +209,9 @@ SEXP finishAns(int k,SEXP Ans,SEXP X){
   SET_VECTOR_ELT(Ans,1,Sscore);
   UNPROTECT(2);
  }
- //X is a data.frame, does it have names?
+ //X.. A data.frame? Does it have names?
  SEXP Xn=getAttrib(X,R_NamesSymbol);
- if(!isNull(Xn) && (k>0)){
+ if(isFrame(X) && !isNull(Xn) && (k>0)){
   //Copy names into names of scores and selection
   SEXP An; PROTECT(An=allocVector(STRSXP,k));
   int *idx=INTEGER(VECTOR_ELT(Ans,0));

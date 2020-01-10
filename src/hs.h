@@ -24,7 +24,8 @@ SEXP C_h(SEXP X,SEXP Threads){
   }
  }
  //Copy attribute names
- setAttrib(Ans,R_NamesSymbol,getAttrib(X,R_NamesSymbol));
+ if(isFrame(X))
+  setAttrib(Ans,R_NamesSymbol,getAttrib(X,R_NamesSymbol));
  
  UNPROTECT(1);
  return(Ans);
