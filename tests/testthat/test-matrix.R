@@ -95,3 +95,14 @@ test_that("njmi matrix works as pure",{
   njmiMatrix(iris,iris[,5],FALSE)
  )
 })
+
+test_that("triScores works",{
+ triScores(cbind(iris,C=rep(1,150)))->z
+ expect_equal(names(z),c("Var1","Var2","Var3","MI"))
+ expect_equal(nrow(z),6*5*4/6)
+
+ z[z$Var3=="C",]->z
+ expect_equal(z$MI,rep(0,10))
+
+ expect_equal(triScores(iris[,c(1,2,1)])$MI,miScores(iris[,1],iris[,2]))
+})

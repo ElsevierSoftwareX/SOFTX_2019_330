@@ -19,7 +19,7 @@ SEXP C_tri(SEXP X,SEXP Threads){
  int n,m,*nx,**x,nt;
  struct ht **hta;
  prepareInput(X,R_NilValue,R_NilValue,Threads,&hta,&n,&m,NULL,NULL,NULL,&x,&nx,&nt);
- if(n<3) error("Cannot process less than three columns");
+ if(m<3) error("Cannot process less than three columns");
 
  int nl=n2l(m);
  SEXP I=PROTECT(allocVector(INTSXP,nl));

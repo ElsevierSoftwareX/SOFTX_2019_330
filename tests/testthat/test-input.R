@@ -181,3 +181,9 @@ test_that("threads argument is processed well",{
  expect_error(miScores(iris[,-5],iris[,5],NA),"Invalid threads argument")
  expect_warning(miScores(iris[,-5],iris[,5],1+parallel::detectCores()),"Thread count capped")
 })
+
+test_that("triScores throws on too narrow input",{
+ expect_error(triScores(iris[,1,drop=FALSE]),"Cannot process")
+ expect_error(triScores(1:10),"Cannot process")
+ expect_error(triScores(iris[,1:2]),"Cannot process")
+})
