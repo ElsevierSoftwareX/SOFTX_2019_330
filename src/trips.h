@@ -1,5 +1,4 @@
 int n2l(int n){
- //TODO: Make it 
  if(n<2) return(0);
  //Version avoiding overflow, quite nasty
 // int ans=n;
@@ -43,6 +42,22 @@ SEXP C_tri(SEXP X,SEXP Threads){
  SET_VECTOR_ELT(Ans,1,J);
  SET_VECTOR_ELT(Ans,2,K);
  SET_VECTOR_ELT(Ans,3,V);
+
+ SEXP AnsN=PROTECT(NEW_CHARACTER(4));
+ SET_STRING_ELT(AnsN,0,mkChar("Var1"));
+ SET_STRING_ELT(AnsN,1,mkChar("Var2"));
+ SET_STRING_ELT(AnsN,2,mkChar("Var3"));
+ SET_STRING_ELT(AnsN,3,mkChar("MI"));
+ setAttrib(Ans,R_NamesSymbol,AnsN);
+
+ SEXP Names=getAttrib(X,R_NamesSymbol);
+ setAttrib(I,R_LevelsSymbol,Names);
+ setAttrib(I,R_ClassSymbol,mkString("factor"));
+ setAttrib(J,R_LevelsSymbol,Names);
+ setAttrib(J,R_ClassSymbol,mkString("factor"));
+ setAttrib(K,R_LevelsSymbol,Names);
+ setAttrib(K,R_ClassSymbol,mkString("factor"));
+
  int *caches=(int*)R_alloc(sizeof(int),nt*n*8);
 
  #pragma omp parallel num_threads(nt)
@@ -82,8 +97,6 @@ SEXP C_tri(SEXP X,SEXP Threads){
   }
  }
 
- UNPROTECT(5);
+ UNPROTECT(6);
  return(Ans);
-    
-
 }

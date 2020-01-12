@@ -169,4 +169,4 @@ hScores<-function(X,threads=0)
 #' triScores(iris)
 #' @export
 triScores<-function(X,threads=0)
- data.frame(setNames(.Call(C_tri,X,as.integer(threads)),c("Var1","Var2","Var3","MI")))
+ data.frame(.Call(C_tri,X,as.integer(threads)))
