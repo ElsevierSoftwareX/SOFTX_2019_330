@@ -186,4 +186,5 @@ test_that("triScores throws on too narrow input",{
  expect_error(triScores(iris[,1,drop=FALSE]),"Cannot process")
  expect_error(triScores(1:10),"Cannot process")
  expect_error(triScores(iris[,1:2]),"Cannot process")
+ expect_error(triScores(iris[1:2,rep(1,2346)]),"Too many features")
 })

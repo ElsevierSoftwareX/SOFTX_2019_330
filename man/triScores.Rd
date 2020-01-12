@@ -15,7 +15,7 @@ Single vector will be interpreted as a data.frame with one column.
 }
 \value{
 A data frame with four columns; first three (\code{Var1}, \code{Var2} and \code{Var3}) are names of features, fourth, \code{MI} is the value of the mutual information.
-The order of features does not matter, hence only one copy of each unique triple is evaluated.
+The order of features does not matter, hence only \deqn{n(n-1)(n-2)/6} unique, sorted triples are evaluated.
 }
 \description{
 Calculates mutual information of each tree features, that is
@@ -27,6 +27,8 @@ To allow smoother user experience, praznik automatically coerces non-factor vect
 Real attributes are cut into about 10 equally-spaced bins, following the heuristic often used in literature.
 Precise number of cuts depends on the number of objects; namely, it is \eqn{n/3}, but never less than 2 and never more than 10.
 Integers (which technically are also numeric) are treated as categorical variables (for compatibility with similar software), so in a very different way -- one should be aware that an actually numeric attribute which happens to be an integer could be coerced into a \eqn{n}-level categorical, which would have a perfect mutual information score and would likely become a very disruptive false positive.
+
+In a current version, the maximal number of features accepted is 2345.
 }
 \examples{
 triScores(iris)

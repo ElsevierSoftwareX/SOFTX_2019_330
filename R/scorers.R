@@ -164,7 +164,8 @@ hScores<-function(X,threads=0)
 #' \deqn{I(X_i;X_j;X_k).}
 #' @template input
 #' @return A data frame with four columns; first three (\code{Var1}, \code{Var2} and \code{Var3}) are names of features, fourth, \code{MI} is the value of the mutual information.
-#' The order of features does not matter, hence only \deqn(n(n-1)(n-2)/6} unique, sorted triples are evaluated.
+#' The order of features does not matter, hence only \deqn{n(n-1)(n-2)/6} unique, sorted triples are evaluated.
+#' @note In a current version, the maximal number of features accepted is 2345.
 #' @examples
 #' triScores(iris)
 #' @export

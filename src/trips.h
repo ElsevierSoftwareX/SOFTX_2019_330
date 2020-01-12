@@ -1,25 +1,19 @@
 int n2l(int n){
  if(n<2) return(0);
- //Version avoiding overflow, quite nasty
-// int ans=n;
-// if(n%2){
-//  ans*=(n-1)/2;
-// }else{
-//  ans=(ans/2)*(n-1);
-// }
-// if(ans%3){
-//  ans*=(n-2)/3;
-// }else{
-//  ans=(ans/3)*(n-2);
-// }
- return(n*(n-1)*(n-2)/6);
+ //Simply n*(n-1)*(n-2)/6, 
+ //but with an overflow avoidance
+ int r=n%6;
+ int q=(n-1)*(n-2);
+ return((n/6)*q+(r*q)/6);
 }
+
 
 SEXP C_tri(SEXP X,SEXP Threads){
  int n,m,*nx,**x,nt;
  struct ht **hta;
  prepareInput(X,R_NilValue,R_NilValue,Threads,&hta,&n,&m,NULL,NULL,NULL,&x,&nx,&nt);
  if(m<3) error("Cannot process less than three columns");
+ if(m>2345) error("Too many features (>2345)");
 
  int nl=n2l(m);
  SEXP I=PROTECT(allocVector(INTSXP,nl));
