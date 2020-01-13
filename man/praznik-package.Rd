@@ -81,6 +81,6 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Miron B. Kursa \email{m@mbq.me} (0000-0001-7672-648X)
+\strong{Maintainer}: Miron B. Kursa \email{m@mbq.me} (\href{https://orcid.org/0000-0001-7672-648X}{ORCID})
 
 }

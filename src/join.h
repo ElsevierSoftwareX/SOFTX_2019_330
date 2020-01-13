@@ -1,7 +1,7 @@
 SEXP C_join(SEXP X){
  int n,m,*nx,**x,nt;
  struct ht **hta;
- prepareInput(X,R_NilValue,R_NilValue,R_NilValue,&hta,&n,&m,NULL,NULL,NULL,&x,&nx,&nt);
+ prepareInput(X,R_NilValue,R_NilValue,NULL,&hta,&n,&m,NULL,NULL,NULL,&x,&nx,&nt);
  struct ht *ht=hta[0];
 
  SEXP Ans=PROTECT(allocVector(INTSXP,n));
@@ -15,7 +15,17 @@ SEXP C_join(SEXP X){
   ISWAP(z,z2);
   nz=nz2;
  }
- UNPROTECT(1);
 
+ char buf[64];
+ SEXP Levels=PROTECT(allocVector(STRSXP,nz));
+ for(int e=0;e<nz;e++){
+  snprintf(buf,64,"l%d",e+1);
+  SET_STRING_ELT(Levels,e,mkChar(buf));
+ }
+ setAttrib(Ans,R_LevelsSymbol,Levels);
+ setAttrib(Ans,R_ClassSymbol,mkString("factor"));
+
+
+ UNPROTECT(2);
  return(Ans);
 }

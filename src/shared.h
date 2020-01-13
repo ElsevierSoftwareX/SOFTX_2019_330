@@ -87,7 +87,7 @@ void prepareInput(SEXP X,SEXP Y,SEXP K,SEXP Threads,struct ht ***ht,int *n,int *
   if(*k>*m) error("Parameter k must be at most the number of attributes");
  }
  
- if(isNull(Threads)){
+ if(!Threads){
   *nt=1;
  }else{
   if(isInteger(Threads) && length(Threads)!=1) error("Invalid threads argument");
