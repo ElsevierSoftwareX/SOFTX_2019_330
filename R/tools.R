@@ -10,7 +10,7 @@
 #' Vacant combinations are dropped. 
 #' @note You can pass a single vector to this function to see how praznik interprets it.
 #' @examples
-#' joinf(c(T,F,T,F),c(T,T,F,F))
+#' joinf(c(1,2,1,2),c(1,1,2,2))
 #' @export
 joinf<-function(...)
  .Call(C_join,data.frame(...))
