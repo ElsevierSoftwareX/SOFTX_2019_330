@@ -1,5 +1,6 @@
 Changes in XX:
  - Single vector can be given as the X argument.
+ - Three-feature MI scorer.
 
 Changes in 7.0:
  - Information score matrices.
