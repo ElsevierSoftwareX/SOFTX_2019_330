@@ -4,8 +4,7 @@
 \alias{MRMR}
 \title{Minimum redundancy maximal relevancy filter}
 \usage{
-MRMR(X, Y, k = if (positive) ncol(X) else 3, positive = FALSE,
-  threads = 0)
+MRMR(X, Y, k = if (positive) ncol(X) else 3, positive = FALSE, threads = 0)
 }
 \arguments{
 \item{X}{Attribute table, given as a data frame with either factors (preferred), booleans, integers (treated as categorical) or reals (which undergo automatic categorisation; see below for details).
