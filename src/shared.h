@@ -86,9 +86,13 @@ void prepareInput(SEXP X,SEXP Y,SEXP K,SEXP Threads,struct ht ***ht,int *n,int *
   if(*k<1) error("Parameter k must be positive");
   if(*k>*m) error("Parameter k must be at most the number of attributes");
  }
-
- if(isInteger(Threads) && length(Threads)!=1) error("Invalid threads argument");
- *nt=INTEGER(Threads)[0];
+ 
+ if(isNull(Threads)){
+  *nt=1;
+ }else{
+  if(isInteger(Threads) && length(Threads)!=1) error("Invalid threads argument");
+  *nt=INTEGER(Threads)[0];
+ }
  if(*nt<0) error("Invalid threads argument");
  if(*nt>omp_get_max_threads()){
   *nt=omp_get_max_threads();
