@@ -26,6 +26,7 @@ test_that("X must be a data.frame is thrown",{
 
 test_that("No rows error is thrown",{
  expect_error(MIM(iris[0,-5],iris[0,5]),"X has no rows")
+ expect_error(hScores(numeric(0)),"X has a zero length")
 })
 
 test_that("Nameless data.frames work",{
@@ -65,10 +66,50 @@ test_that("Crazy-double valued features work",{
  )
 })
 
+#Following https://gitlab.com/mbq/praznik/issues/23
+c(
+ "CMI","MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR",
+ "cmiMatrix","cmiScores","dnmiMatrix","hScores","impScores",
+ "jmiMatrix","jmiScores","miMatrix","miScores","njmiMatrix",
+ "njmiScores","nmiMatrix"
+)->algos
+for(algo in algos){
+ test_that(sprintf("Named vector X work with %s",algo),{
+  if(grepl("^h",algo)){
+   z<-do.call(algo,list(c(a=1,b=2,c=3)))
+  }else if(grepl("(^mi|^imp|^dnmi|^nmi)",algo)){
+   z<-do.call(algo,list(c(a=1,b=2,c=3),1:3))
+  }else if(grepl("(^cmi|^jmi|^njmi)",algo)){
+   z<-do.call(algo,list(c(a=1,b=2,c=3),1:3,3:1))
+  }else{  
+   z<-do.call(algo,list(c(a=1,b=2,c=3),1:3,k=1))
+  }
+  if(grepl("Matrix$",algo)){
+   expect_null(rownames(z))
+   expect_null(colnames(z))
+  }else if(grepl("Scores$",algo)){
+   expect_null(names(z))
+  }else{
+   expect_null(names(z$selection))
+   expect_null(names(z$score))
+  }
+ })
+}
+
 test_that("Magical cut works like R cut",{
  expect_equal(
   miScores(iris[,-5],iris$Species),
   miScores(data.frame(apply(iris[,-5],2,cut,10)),iris$Species)
+ )
+ ii<-iris[c(1:14,100:112),]
+ expect_equal(
+  miScores(ii[,-5],ii$Species),
+  miScores(data.frame(apply(ii[,-5],2,cut,9)),ii$Species)
+ )
+ ii<-iris[c(1:3,101:103),]
+ expect_equal(
+  miScores(ii[,-5],ii$Species),
+  miScores(data.frame(apply(ii[,-5],2,cut,2)),ii$Species)
  )
 })
 
@@ -106,8 +147,10 @@ test_that("X and Y must be only reals, booleans, integers or factors",{
   img=data.frame(A=1:5+3i),
   li=li
  )
- for(X in badX)
+ for(X in badX){
   expect_error(MIM(X,Y,1))
+  expect_error(hScores(X$A))
+ }
  for(Y in badX)
   expect_error(MIM(data.frame(A=Y),X$A,1))
 })
@@ -137,4 +180,11 @@ test_that("threads argument is processed well",{
  expect_error(miScores(iris[,-5],iris[,5],-17L),"Invalid threads argument")
  expect_error(miScores(iris[,-5],iris[,5],NA),"Invalid threads argument")
  expect_warning(miScores(iris[,-5],iris[,5],1+parallel::detectCores()),"Thread count capped")
+})
+
+test_that("triScores throws on too narrow input",{
+ expect_error(triScores(iris[,1,drop=FALSE]),"Cannot process")
+ expect_error(triScores(1:10),"Cannot process")
+ expect_error(triScores(iris[,1:2]),"Cannot process")
+ expect_error(triScores(iris[1:2,rep(1,2346)]),"Too many features")
 })
