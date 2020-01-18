@@ -18,7 +18,7 @@ A data frame with four columns; first three (\code{Var1}, \code{Var2} and \code{
 The order of features does not matter, hence only \deqn{n(n-1)(n-2)/6} unique, sorted triples are evaluated.
 }
 \description{
-Calculates mutual information of each tree features, that is
+Calculates mutual information of each triple of features, that is
 \deqn{I(X_i;X_j;X_k).}
 }
 \note{
@@ -28,7 +28,10 @@ Real attributes are cut into about 10 equally-spaced bins, following the heurist
 Precise number of cuts depends on the number of objects; namely, it is \eqn{n/3}, but never less than 2 and never more than 10.
 Integers (which technically are also numeric) are treated as categorical variables (for compatibility with similar software), so in a very different way -- one should be aware that an actually numeric attribute which happens to be an integer could be coerced into a \eqn{n}-level categorical, which would have a perfect mutual information score and would likely become a very disruptive false positive.
 
-In a current version, the maximal number of features accepted is 2345.
+In a current version, the maximal number of features accepted is 2345, which gives a bit less than 2^32 triples.
+The equation used for calculation is
+\deqn{I(X_i;X_j;X_k)=I(X_i;X_k)+I(X_j;X_k)-I(X_i,X_j;X_k).}
+Henceforth, please mind that rounding errors may occur and influence reproducibility.
 }
 \examples{
 triScores(iris)
