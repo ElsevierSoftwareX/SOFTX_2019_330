@@ -160,19 +160,17 @@ hScores<-function(X,threads=0)
 
 #' Mutual information of feature triples
 #'
-#' Calculates mutual information of each tree features, that is
+#' Calculates mutual information of each triple of features, that is
 #' \deqn{I(X_i;X_j;X_k).}
 #' @template input
 #' @return A data frame with four columns; first three (\code{Var1}, \code{Var2} and \code{Var3}) are names of features, fourth, \code{MI} is the value of the mutual information.
 #' The order of features does not matter, hence only \deqn{n(n-1)(n-2)/6} unique, sorted triples are evaluated.
-#' @note In a current version, the maximal number of features accepted is 2345.
+#' @note In a current version, the maximal number of features accepted is 2345, which gives a bit less than 2^32 triples.
+#' The equation used for calculation is
+#' \deqn{I(X_i;X_j;X_k)=I(X_i;X_k)+I(X_j;X_k)-I(X_i,X_j;X_k).}
+#' Henceforth, please mind that rounding errors may occur and influence reproducibility.
 #' @examples
 #' triScores(iris)
 #' @export
 triScores<-function(X,threads=0)
  data.frame(.Call(C_tri,X,as.integer(threads)))
-
-
-#' @export
-triScores2<-function(X,threads=0)
- data.frame(.Call(C_tri2,X,as.integer(threads)))

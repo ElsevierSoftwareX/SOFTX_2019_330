@@ -84,7 +84,6 @@ static const R_CallMethodDef R_CallDef[]={
  CALLDEF(C_kt,1),
  CALLDEF(C_join,1),
  CALLDEF(C_tri,2),
- CALLDEF(C_tri2,2),
  {NULL,NULL,0}
 };
 
