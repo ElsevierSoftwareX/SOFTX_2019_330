@@ -66,7 +66,7 @@ SEXP C_kt(SEXP X){
   if(length(X)<1) error("Data frame with no columns");
   int n=length(VECTOR_ELT(X,0));
   if(n<2) error("Data frame with less than two rows");
-  SEXP Ans; PROTECT(Ans=allocVector(VECSXP,length(X)));
+  SEXP Ans=PROTECT(allocVector(VECSXP,length(X)));
   for(int e=0;e<length(X);e++){
    SEXP V=VECTOR_ELT(X,e);
    SEXP KtV; PROTECT(KtV=allocVector(INTSXP,n*(n-1)));
@@ -83,4 +83,58 @@ SEXP C_kt(SEXP X){
   return(Ans);
  }
  error("Unsupported input");
+}
+
+SEXP C_rkt(SEXP X){
+ if(isList(X)) error("Invalid input, should be a single vector");
+ int m=length(X);
+ if(m<2) error("Input too short");
+ int n=ceil(sqrt(m));
+ if(m!=n*(n-1)) error("Invalid size, should be n(n-1)");
+ Rprintf("n=%d m=%d\n",n,m);
+
+ SEXP D=PROTECT(allocVector(INTSXP,2));
+ int *d=INTEGER(D);
+ d[0]=n;
+ d[1]=n;
+
+ if(isReal(X)){
+  SEXP Ans=PROTECT(allocVector(REALSXP,n*n));
+  setAttrib(Ans,R_DimSymbol,D);
+  double *x=REAL(X);
+  double *ans=REAL(Ans);
+  for(int e=0;e<n-1;e++){
+   *ans=NA_REAL; ans++;
+   for(int ee=0;ee<n;ee++){
+    *ans=*x;
+    x++;
+    ans++;
+   }
+  }
+  *ans=NA_REAL;
+  UNPROTECT(2);
+  return(Ans);
+ }
+
+ if(isInteger(X)||isFactor(X)||isLogical(X)){
+  SEXP Ans=PROTECT(allocVector(INTSXP,n*n));
+  setAttrib(Ans,R_DimSymbol,D);
+  int *x=INTEGER(X);
+  int *ans=INTEGER(Ans);
+  for(int e=0;e<n-1;e++){
+   *ans=NA_INTEGER; ans++;
+   for(int ee=0;ee<n;ee++){
+    *ans=*x;
+    x++;
+    ans++;
+   }
+  }
+  *ans=NA_INTEGER;
+  setAttrib(Ans,R_LevelsSymbol,getAttrib(X,R_LevelsSymbol));
+  UNPROTECT(2);
+  return(Ans);
+ }
+
+ UNPROTECT(1);
+ error("Invalid input");
 }

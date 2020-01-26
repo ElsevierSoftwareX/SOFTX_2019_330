@@ -10,3 +10,16 @@
 #' @export
 kTransform<-function(x)
  if(is.data.frame(x)) data.frame(.Call(C_kt,x)) else .Call(C_kt,x)
+
+#' Inverse Kendall transform
+#'
+#' @param x A Kendall-transformed feature.
+#' @export
+kInverse<-function(x){
+ if(is.factor(x))
+  if(all(levels(x)%in%c("<",">","=")))
+   x<-factor(x,levels=c("<","=",">"))
+  else stop("Factor does not seem to be a Kendall-transformed variable")
+ print(colSums(.Call(C_rkt,x),na.rm=TRUE)->f)
+ rank(f)
+}
