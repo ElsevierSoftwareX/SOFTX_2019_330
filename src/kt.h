@@ -86,12 +86,11 @@ SEXP C_kt(SEXP X){
 }
 
 SEXP C_rkt(SEXP X){
- if(isList(X)) error("Invalid input, should be a single vector");
+ if(isList(X)||isFrame(X)) error("Invalid input, should be a single vector");
  int m=length(X);
  if(m<2) error("Input too short");
  int n=ceil(sqrt(m));
  if(m!=n*(n-1)) error("Invalid size, should be n(n-1)");
- Rprintf("n=%d m=%d\n",n,m);
 
  SEXP D=PROTECT(allocVector(INTSXP,2));
  int *d=INTEGER(D);
