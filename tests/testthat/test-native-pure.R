@@ -101,6 +101,13 @@ test_that("h behaves properly",{
  )
 })
 
+test_that("jh behaves properly",{
+ expect_equal(
+  hScores(data.frame(apply(X,2,joinf,Y))),
+  jhScores(X,Y)
+ )
+})
+
 test_that("jmi behaves properly",{
  Z<-factor((1:150)%%7)
  expect_equal(

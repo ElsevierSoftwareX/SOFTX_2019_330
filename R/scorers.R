@@ -158,6 +158,18 @@ impScores<-function(X,Y,threads=0)
 hScores<-function(X,threads=0)
  .Call(C_h,X,as.integer(threads))
 
+#' Joint entropy scores
+#'
+#' Calculates joint entropy of each feature and a condition \code{Y}, that is
+#' \deqn{H(X,Y).}
+#' @template input
+#' @return A numerical vector with entropy scores, with names copied from \code{X}.
+#' @examples
+#' jhScores(iris[,-5],iris[,5])
+#' @export
+jhScores<-function(X,Y,threads=0)
+ .Call(C_jh,X,Y,as.integer(threads))
+
 #' Mutual information of feature triples
 #'
 #' Calculates mutual information of each triple of features, that is
