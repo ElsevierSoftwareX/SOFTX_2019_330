@@ -165,7 +165,7 @@ hScores<-function(X,threads=0)
 #' @template input
 #' @return A numerical vector with entropy scores, with names copied from \code{X}.
 #' @examples
-#' hScores(iris[,-5],iris[,5])
+#' jhScores(iris[,-5],iris[,5])
 #' @export
 jhScores<-function(X,Y,threads=0)
  .Call(C_jh,X,Y,as.integer(threads))
