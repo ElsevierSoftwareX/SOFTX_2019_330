@@ -1,6 +1,6 @@
 context("test-native-pure.R")
 
-data.frame(apply(iris[,-5],2,cut,10))->X
+data.frame(lapply(iris[,-5],cut,10))->X
 X$const<-factor(rep(1,150))
 X$tri<-factor(rep(1:3,50))
 Y<-iris$Species
