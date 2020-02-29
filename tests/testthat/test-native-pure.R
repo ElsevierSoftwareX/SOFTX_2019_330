@@ -103,7 +103,7 @@ test_that("h behaves properly",{
 
 test_that("jh behaves properly",{
  expect_equal(
-  hScores(data.frame(apply(X,2,joinf,Y))),
+  hScores(data.frame(lapply(X,joinf,Y))),
   jhScores(X,Y)
  )
 })

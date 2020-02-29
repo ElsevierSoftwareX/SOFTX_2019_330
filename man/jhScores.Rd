@@ -11,6 +11,9 @@ jhScores(X, Y, threads = 0)
 Single vector will be interpreted as a data.frame with one column.
 \code{NA}s are not allowed.}
 
+\item{Y}{Decision attribute; should be given as a factor, but other options are accepted, exactly like for attributes.
+\code{NA}s are not allowed.}
+
 \item{threads}{Number of threads to use; default value, 0, means all available to OpenMP.}
 }
 \value{

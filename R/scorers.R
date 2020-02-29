@@ -163,6 +163,7 @@ hScores<-function(X,threads=0)
 #' Calculates joint entropy of each feature and a condition \code{Y}, that is
 #' \deqn{H(X,Y).}
 #' @template input
+#' @template y
 #' @return A numerical vector with entropy scores, with names copied from \code{X}.
 #' @examples
 #' jhScores(iris[,-5],iris[,5])

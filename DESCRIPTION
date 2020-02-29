@@ -1,7 +1,7 @@
 Package: praznik
 Type: Package
 Title: Tools for Information-Based Feature Selection
-Version: 7.0.0
+Version: 8.0.0
 Depends: R (>= 2.10)
 Authors@R: c(
   person(

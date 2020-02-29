@@ -1,8 +1,9 @@
-Changes in XX:
+Changes in 8.0:
  - Single vector can be given as the X argument.
  - Three-feature MI scorer.
  - Kendall transformation.
  - Joint entropy scorer.
+ - Future-proofing for R 4.0.
 
 Changes in 7.0:
  - Information score matrices.

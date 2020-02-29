@@ -82,14 +82,14 @@ SEXP C_tri(SEXP X,SEXP Threads){
   }
 
   int *cC=cA,*cAB=cB;
-  int oa=-1,ob=-1,nab;
+  int oa=-1,ob=-1;
   //Second step; use I(A;B;C)=I(A;C)+I(B;C)-I(AB;C)
   // first two from MI cache, last by holding AB mix
   #pragma omp for
   for(int e=0;e<l;e++){
    int i=ii[e]-1,j=ji[e]-1,k=ki[e]-1;
    int *a=x[i],*b=x[j],*c=x[k];
-   int na=nx[i],nb=nx[j],nc=nx[k];
+   int na=nx[i],nb=nx[j],nc=nx[k],nab;
 
    if(oa!=i || ob!=j){
     //New AB; we cache ab, nab and cAB
