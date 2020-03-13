@@ -1,4 +1,4 @@
-image: registry.gitlab.com/mbq/arrch:20200313.3
+image: registry.gitlab.com/mbq/arrch:latest
 
 stages:
   - basic
@@ -20,7 +20,7 @@ r-base-basic:
 r-base-check:
   stage: check
   script:
-    - R CMD check --no-manual --no-build-vignettes praznik_*.tar.gz
+    - R CMD check praznik_*.tar.gz
   artifacts:
     paths:
       - praznik.Rcheck/
@@ -29,7 +29,7 @@ r-dev-check:
   stage: check
   allow_failure: true
   script:
-    - RD CMD check --no-manual --no-build-vignettes praznik_*.tar.gz
+    - RD CMD check praznik_*.tar.gz
   artifacts:
     paths:
       - praznik.Rcheck/
