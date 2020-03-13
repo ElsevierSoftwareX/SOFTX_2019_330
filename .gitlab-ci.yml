@@ -1,4 +1,4 @@
-image: registry.gitlab.com/mbq/arrch
+image: registry.gitlab.com/mbq/arrch:20200313.3
 
 stages:
   - basic
