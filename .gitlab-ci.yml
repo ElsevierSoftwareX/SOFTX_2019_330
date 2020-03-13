@@ -1,4 +1,4 @@
-image: rwercker/base
+image: registry.gitlab.com/mbq/arrch
 
 stages:
   - basic
@@ -29,8 +29,6 @@ r-dev-check:
   stage: check
   allow_failure: true
   script:
-    - RD -e "install.packages('magrittr')"
-    - RD -e "install.packages('testthat')"
     - RD CMD check --no-manual --no-build-vignettes praznik_*.tar.gz
   artifacts:
     paths:
