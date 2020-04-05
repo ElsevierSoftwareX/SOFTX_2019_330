@@ -193,3 +193,18 @@ pureDISR<-function(X,Y,k=3){
  )
 }
 
+pureTriMatrix<-function(X,Y){
+ triScores(cbind(X,._dec=Y))->tX
+ tX[rowSums(tX[,1:3]=="._dec")>0,]->tX
+ t(apply(tX[,1:3],1,setdiff,"._dec"))->cc
+ ans<-matrix(NA,nrow=ncol(X),ncol=ncol(X),dimnames=list(names(X),names(X)))
+ for(e in 1:nrow(tX)){
+  ans[cc[e,1],cc[e,2]]<-tX[e,4]
+  ans[cc[e,2],cc[e,1]]<-tX[e,4]
+ }
+ diag(ans)<-miScores(X,Y)
+ ans
+}
+
+pureTriMatrix2<-function(X,Y)
+ t(miMatrix(X)-jmiMatrix(X,Y))+miScores(X,Y)
