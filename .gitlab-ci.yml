@@ -1,4 +1,4 @@
-image: registry.gitlab.com/mbq/arrch:latest
+image: ghcr.io/arch-r/arch-r:latest
 
 stages:
   - basic
