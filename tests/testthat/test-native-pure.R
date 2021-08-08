@@ -125,6 +125,16 @@ test_that("jmi behaves properly",{
   )
 })
 
+test_that("max jmi behaves properly",{
+ sapply(X,function(z) jmiScores(X,Y,z))->m
+ diag(m)<-0
+ expect_equal(
+  apply(m,2,max),
+  maxJmiScores(X,Y)
+ )
+})
+
+
 test_that("multithread tie breaking is stable",{
  if(.Machine$sizeof.pointer!=8) skip("Unstable on i386")
  for(met in sapply(algos,get))

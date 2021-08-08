@@ -10,7 +10,7 @@ pmc<-sample(ncol(MadelonD$X),ncol(MadelonD$X))
 inputp<-list(X=MadelonD$X[pmr,pmc],Y=MadelonD$Y[pmr],k=20)
 
 for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR","JIM")){
- test_that(sprintf("Native %s works the same on permuted Madelon",algo,algo),{
+ test_that(sprintf("Native %s works the same on permuted Madelon",algo),{
   do.call(algo,input)->j
   do.call(algo,inputp)->p
   expect_equal(j$score,p$score)
@@ -19,7 +19,7 @@ for(algo in c("MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR","JIM")){
 }
 
 # We need exception for CMI since attributes become indistinguishable for it
-test_that(sprintf("Native %s works the same on permuted Madelon",algo,algo),{
+test_that(sprintf("Native %s works the same on permuted Madelon",algo),{
  inputp<-list(X=MadelonD$X[pmr,],Y=MadelonD$Y[pmr],k=20)
  do.call(CMI,input)->j
  do.call(CMI,inputp)->p

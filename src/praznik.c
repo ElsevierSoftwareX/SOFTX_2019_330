@@ -41,6 +41,7 @@
 #include "mis.h"
 #include "cmis.h"
 #include "jmis.h"
+#include "maxjmis.h"
 #include "ims.h"
 #include "hs.h"
 #include "trips.h"
@@ -72,6 +73,7 @@ static const R_CallMethodDef R_CallDef[]={
  CALLDEF(C_miMatrix,3),
  CALLDEF(C_jmi,4),
  CALLDEF(C_njmi,4),
+ CALLDEF(C_max_jmi,3),
  CALLDEF(C_cmi,4),
  CALLDEF(C_cmiMatrix,4),
  CALLDEF(C_jmiMatrix,4),
