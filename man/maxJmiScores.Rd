@@ -4,7 +4,7 @@
 \alias{maxJmiScores}
 \title{Maximal pairwise joint mutual information scores}
 \usage{
-maxJmiScores(X, Y, Z, threads = 0)
+maxJmiScores(X, Y, threads = 0)
 }
 \arguments{
 \item{X}{Attribute table, given as a data frame with either factors (preferred), booleans, integers (treated as categorical) or reals (which undergo automatic categorisation; see below for details).
@@ -31,5 +31,5 @@ Precise number of cuts depends on the number of objects; namely, it is \eqn{n/3}
 Integers (which technically are also numeric) are treated as categorical variables (for compatibility with similar software), so in a very different way -- one should be aware that an actually numeric attribute which happens to be an integer could be coerced into a \eqn{n}-level categorical, which would have a perfect mutual information score and would likely become a very disruptive false positive.
 }
 \examples{
-maxJmiScores(iris[,-5],iris$Species,iris$Sepal.Length)
+maxJmiScores(iris[,-5],iris$Species)
 }

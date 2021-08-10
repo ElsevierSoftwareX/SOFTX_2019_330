@@ -100,9 +100,9 @@ jmiScores<-function(X,Y,Z,threads=0)
 #' @template y
 #' @return A numerical vector with maximal joint mutual information scores, with names copied from \code{X}.
 #' @examples
-#' maxJmiScores(iris[,-5],iris$Species,iris$Sepal.Length)
+#' maxJmiScores(iris[,-5],iris$Species)
 #' @export
-maxJmiScores<-function(X,Y,Z,threads=0)
+maxJmiScores<-function(X,Y,threads=0)
  .Call(C_max_jmi,X,Y,as.integer(threads))
 
 #' Joint mutual information matrix
