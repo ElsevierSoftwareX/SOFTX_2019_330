@@ -77,9 +77,9 @@ for(algo in algos){
  test_that(sprintf("Named vector X work with %s",algo),{
   if(grepl("^h",algo)){
    z<-do.call(algo,list(c(a=1,b=2,c=3)))
-  }else if(grepl("(^mi|^imp|^dnmi|^nmi)",algo)){
+  }else if(grepl("(^mi|^imp|^dnmi|^nmi|^maxJmi)",algo)){
    z<-do.call(algo,list(c(a=1,b=2,c=3),1:3))
-  }else if(grepl("(^cmi|^jmi|^njmi|^maxJmi)",algo)){
+  }else if(grepl("(^cmi|^jmi|^njmi)",algo)){
    z<-do.call(algo,list(c(a=1,b=2,c=3),1:3,3:1))
   }else{  
    z<-do.call(algo,list(c(a=1,b=2,c=3),1:3,k=1))
