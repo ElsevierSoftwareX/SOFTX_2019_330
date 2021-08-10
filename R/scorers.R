@@ -94,16 +94,31 @@ jmiScores<-function(X,Y,Z,threads=0)
 
 #' Maximal pairwise joint mutual information scores
 #'
-#' Calculates joint mutual information between each joint feature pair with the decision, that is
-#' \deqn{I(X_i,X_j;Y).}
+#' Calculates joint mutual information between each joint feature pair with the decision, and yields maximal value
+#' for each feature, that is
+#' \deqn{max_{j\neq i} I(X_i,X_j;Y).}
 #' @template input
 #' @template y
-#' @return A numerical vector with maximal joint mutual information scores, with names copied from \code{X}.
+#' @return A numerical vector with maximal pairwise joint mutual information scores, with names copied from \code{X}.
 #' @examples
 #' maxJmiScores(iris[,-5],iris$Species)
 #' @export
 maxJmiScores<-function(X,Y,threads=0)
  .Call(C_max_jmi,X,Y,as.integer(threads))
+
+#' Maximal pairwise conditional mutual information scores
+#'
+#' For each feature, calculates the conditional mutual information between this feature and the decision, 
+#' conditioned on all other features, and returns the maximal value, that is
+#' \deqn{max_j I(X_i;Y|X_j).}
+#' @template input
+#' @template y
+#' @return A numerical vector with maximal pairwise conditional mutual information scores, with names copied from \code{X}.
+#' @examples
+#' maxCmiScores(iris[,-5],iris$Species)
+#' @export
+maxCmiScores<-function(X,Y,threads=0)
+ .Call(C_max_cmi,X,Y,as.integer(threads))
 
 #' Joint mutual information matrix
 #'

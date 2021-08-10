@@ -56,6 +56,7 @@ SEXP C_cmiMatrix(SEXP X,SEXP Z,SEXP Diag,SEXP Threads){
  int *cXc=(int*)R_alloc(sizeof(int),2*n*nt);
  int *nzx=(int*)R_alloc(sizeof(int),m);
  //Collapsed state translation matrix
+ //TODO: Rethink that -- maybe we can make this on a fly?
  int *xz2z=(int*)R_alloc(sizeof(int),n*m);
  double *score=REAL(Ans);
 
