@@ -2,7 +2,7 @@
 % Please edit documentation in R/scorers.R
 \name{cmiMatrix}
 \alias{cmiMatrix}
-\title{Conditional mutual information matrix}
+\title{Conditional mutual information matrix with a common condition}
 \usage{
 cmiMatrix(X, Z, zeroDiag = TRUE, threads = 0)
 }

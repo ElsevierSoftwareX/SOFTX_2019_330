@@ -28,7 +28,7 @@ pureCmiMatrix<-function(X,Z,zeroDiag=TRUE){
  ans
 }
 
-pureCmiMatrix2<-function(X,Y){
+pureICmiMatrix<-function(X,Y){
  sapply(1:ncol(X),function(e) cmiScores(X,Y,X[,e]))->ans
  colnames(ans)<-names(X)
  ans
@@ -90,8 +90,8 @@ test_that("cmi matrix works as pure",{
 
 test_that("cmi2 matrix works as pure",{
  expect_equal(
-  pureCmiMatrix2(iris,iris[,5]),
-  cmiMatrix2(iris,iris[,5])
+  pureICmiMatrix(iris,iris[,5]),
+  icmiMatrix(iris,iris[,5])
  )
 })
 
