@@ -137,6 +137,36 @@ maxJmiScores<-function(X,Y,threads=0)
 #' maxCmiScores(iris[,-5],iris$Species)
 #' @export
 maxCmiScores<-function(X,Y,threads=0)
+ .Call(C_max_cmi,X,Y,as.integer(threads))[2,]
+
+#' Minimal pairwise conditional mutual information scores
+#'
+#' For each feature, calculates the conditional mutual information between this feature and the decision, 
+#' conditioned on all other features, and returns the minimal value, that is
+#' \deqn{min_j I(X_i;Y|X_j).}
+#' @template input
+#' @template y
+#' @return A numerical vector with minimal pairwise conditional mutual information scores, with names copied from \code{X}.
+#' @examples
+#' minCmiScores(iris[,-5],iris$Species)
+#' @export
+minCmiScores<-function(X,Y,threads=0)
+ .Call(C_max_cmi,X,Y,as.integer(threads))[1,]
+
+#' Extreme values of pairwise conditional mutual information scores
+#'
+#' For each feature, calculates the conditional mutual information between this feature and the decision, 
+#' conditioned on all other features, and returns extreme values, that is
+#' \deqn{min_j I(X_i;Y|X_j)}
+#' and
+#' \deqn{min_j I(X_i;Y|X_j).}
+#' @template input
+#' @template y
+#' @return A numerical matrix with maximal (first row) and minimal (second row) pairwise conditional mutual information scores, with names copied from \code{X}.
+#' @examples
+#' minMaxCmiScores(iris[,-5],iris$Species)
+#' @export
+minMaxCmiScores<-function(X,Y,threads=0)
  .Call(C_max_cmi,X,Y,as.integer(threads))
 
 #' Joint mutual information matrix
