@@ -1,10 +1,3 @@
-#include <R.h>
-#include <Rdefines.h>
-#include <Rinternals.h>
-#include <R_ext/Utils.h>
-#include <R_ext/Rdynload.h>
-#include <R_ext/Visibility.h> 
-
 #ifdef _OPENMP
  #include <omp.h>
 #else
@@ -12,6 +5,13 @@
  #define omp_get_max_threads() 1
  #define omp_set_num_threads(x)
 #endif
+
+#include <R.h>
+#include <Rdefines.h>
+#include <Rinternals.h>
+#include <R_ext/Utils.h>
+#include <R_ext/Rdynload.h>
+#include <R_ext/Visibility.h> 
 
 //Hash table
 
@@ -76,6 +76,7 @@ static const R_CallMethodDef R_CallDef[]={
  CALLDEF(C_max_jmi,3),
  CALLDEF(C_cmi,4),
  CALLDEF(C_cmiMatrix,4),
+ CALLDEF(C_cmiMatrix2,3),
  CALLDEF(C_jmiMatrix,4),
  CALLDEF(C_njmiMatrix,4),
  CALLDEF(C_nmiMatrix,3),
