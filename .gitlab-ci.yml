@@ -1,4 +1,4 @@
-image: rwercker/base
+image: ghcr.io/arch-r/arch-r:latest
 
 stages:
   - basic
@@ -20,7 +20,7 @@ r-base-basic:
 r-base-check:
   stage: check
   script:
-    - R CMD check --no-manual --no-build-vignettes praznik_*.tar.gz
+    - R CMD check praznik_*.tar.gz
   artifacts:
     paths:
       - praznik.Rcheck/
@@ -29,9 +29,7 @@ r-dev-check:
   stage: check
   allow_failure: true
   script:
-    - RD -e "install.packages('magrittr')"
-    - RD -e "install.packages('testthat')"
-    - RD CMD check --no-manual --no-build-vignettes praznik_*.tar.gz
+    - RD CMD check praznik_*.tar.gz
   artifacts:
     paths:
       - praznik.Rcheck/

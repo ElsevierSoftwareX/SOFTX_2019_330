@@ -8,5 +8,6 @@ man-roxygen
 \.so$
 .md
 .yml
+.orig
 .tar.gz
 side/

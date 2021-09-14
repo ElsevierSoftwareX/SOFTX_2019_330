@@ -18,6 +18,7 @@ miScores<-function(X,Y,threads=0)
 #' Calculates mutual information between each two features, that is
 #' \deqn{I(X_i,X_j).}
 #' @template input
+#' @template zd
 #' @template matrix
 #' @examples
 #' miMatrix(iris)
@@ -30,6 +31,7 @@ miMatrix<-function(X,zeroDiag=TRUE,threads=0)
 #' Calculates normalised mutual information between each two features, that is
 #' \deqn{\frac{I(X_i,X_j)}{H(X_i,X_j)}.}
 #' @template input
+#' @template zd
 #' @template matrix
 #' @examples
 #' nmiMatrix(iris)
@@ -42,6 +44,7 @@ nmiMatrix<-function(X,zeroDiag=TRUE,threads=0)
 #' Calculates directed normalised mutual information between each two features, that is
 #' \deqn{\frac{I(X_i,X_j)}{H(X_j)}.}
 #' @template input
+#' @template zd
 #' @template matrix
 #' @examples
 #' dnmiMatrix(iris)
@@ -63,18 +66,34 @@ dnmiMatrix<-function(X,zeroDiag=TRUE,threads=0)
 cmiScores<-function(X,Y,Z,threads=0)
  .Call(C_cmi,X,Y,Z,as.integer(threads))
 
-#' Conditional mutual information matrix
+#' Conditional mutual information matrix with a common condition
 #'
 #' Calculates conditional mutual information between each two features given another one, that is
 #' \deqn{I(X_i;X_j|Z).}
 #' @template input
 #' @param Z Condition; should be given as a factor, but other options are accepted, as for features. 
+#' @template zd
 #' @template matrix
 #' @examples
 #' cmiMatrix(iris[,-5],iris[,5])
 #' @export
 cmiMatrix<-function(X,Z,zeroDiag=TRUE,threads=0)
  .Call(C_cmiMatrix,X,Z,as.logical(zeroDiag),as.integer(threads))
+
+#' Conditional mutual information matrix with a common variable
+#'
+#' Calculates conditional mutual information between each feature and the decision given each other feature, that is
+#' \deqn{I(X_i;Y|X_j).}
+#' @template input
+#' @template y
+#' @template matrix
+#' @examples
+#' icmiMatrix(iris[,-5],iris[,5])
+#' @note Diagonal is always zero with this score.
+#'  The function name comes from the reasoning that this is an "interaction-CMI" showing how feature pairs interact in explaining the decision.
+#' @export
+icmiMatrix<-function(X,Y,threads=0)
+ .Call(C_cmiMatrix2,X,Y,as.integer(threads))
 
 #' Joint mutual information scores
 #'
@@ -92,12 +111,71 @@ cmiMatrix<-function(X,Z,zeroDiag=TRUE,threads=0)
 jmiScores<-function(X,Y,Z,threads=0)
  .Call(C_jmi,X,Y,Z,as.integer(threads))
 
+#' Maximal pairwise joint mutual information scores
+#'
+#' Calculates joint mutual information between each joint feature pair with the decision, and yields maximal value
+#' for each feature, that is
+#' \deqn{max_{j\neq i} I(X_i,X_j;Y).}
+#' @template input
+#' @template y
+#' @return A numerical vector with maximal pairwise joint mutual information scores, with names copied from \code{X}.
+#' @examples
+#' maxJmiScores(iris[,-5],iris$Species)
+#' @export
+maxJmiScores<-function(X,Y,threads=0)
+ .Call(C_max_jmi,X,Y,as.integer(threads))
+
+#' Maximal pairwise conditional mutual information scores
+#'
+#' For each feature, calculates the conditional mutual information between this feature and the decision, 
+#' conditioned on all other features, and returns the maximal value, that is
+#' \deqn{max_j I(X_i;Y|X_j).}
+#' @template input
+#' @template y
+#' @return A numerical vector with maximal pairwise conditional mutual information scores, with names copied from \code{X}.
+#' @examples
+#' maxCmiScores(iris[,-5],iris$Species)
+#' @export
+maxCmiScores<-function(X,Y,threads=0)
+ .Call(C_max_cmi,X,Y,as.integer(threads))[2,]
+
+#' Minimal pairwise conditional mutual information scores
+#'
+#' For each feature, calculates the conditional mutual information between this feature and the decision, 
+#' conditioned on all other features, and returns the minimal value, that is
+#' \deqn{min_j I(X_i;Y|X_j).}
+#' @template input
+#' @template y
+#' @return A numerical vector with minimal pairwise conditional mutual information scores, with names copied from \code{X}.
+#' @examples
+#' minCmiScores(iris[,-5],iris$Species)
+#' @export
+minCmiScores<-function(X,Y,threads=0)
+ .Call(C_max_cmi,X,Y,as.integer(threads))[1,]
+
+#' Extreme values of pairwise conditional mutual information scores
+#'
+#' For each feature, calculates the conditional mutual information between this feature and the decision, 
+#' conditioned on all other features, and returns extreme values, that is
+#' \deqn{min_j I(X_i;Y|X_j)}
+#' and
+#' \deqn{min_j I(X_i;Y|X_j).}
+#' @template input
+#' @template y
+#' @return A numerical matrix with maximal (first row) and minimal (second row) pairwise conditional mutual information scores, with names copied from \code{X}.
+#' @examples
+#' minMaxCmiScores(iris[,-5],iris$Species)
+#' @export
+minMaxCmiScores<-function(X,Y,threads=0)
+ .Call(C_max_cmi,X,Y,as.integer(threads))
+
 #' Joint mutual information matrix
 #'
 #' Calculates mutual information between each feature and a joint mix of each other feature with a given feature, that is
 #' \deqn{I(X_i;X_j,Z).}
 #' @template input
 #' @param Z Condition; should be given as a factor, but other options are accepted, as for features. 
+#' @template zd
 #' @template matrix
 #' @examples
 #' jmiMatrix(iris[,-5],iris[,5])
@@ -126,6 +204,7 @@ njmiScores<-function(X,Y,Z,threads=0)
 #' \deqn{\frac{I(X_i;X_j,Z)}{H(X_i,X_j,Z)}.}
 #' @template input
 #' @param Z Condition; should be given as a factor, but other options are accepted, as for features. 
+#' @template zd
 #' @template matrix
 #' @examples
 #' njmiMatrix(iris[,-5],iris[,5])
@@ -158,6 +237,19 @@ impScores<-function(X,Y,threads=0)
 hScores<-function(X,threads=0)
  .Call(C_h,X,as.integer(threads))
 
+#' Joint entropy scores
+#'
+#' Calculates joint entropy of each feature and a condition \code{Y}, that is
+#' \deqn{H(X,Y).}
+#' @template input
+#' @template y
+#' @return A numerical vector with entropy scores, with names copied from \code{X}.
+#' @examples
+#' jhScores(iris[,-5],iris[,5])
+#' @export
+jhScores<-function(X,Y,threads=0)
+ .Call(C_jh,X,Y,as.integer(threads))
+
 #' Mutual information of feature triples
 #'
 #' Calculates mutual information of each triple of features, that is
@@ -169,6 +261,7 @@ hScores<-function(X,threads=0)
 #' The equation used for calculation is
 #' \deqn{I(X_i;X_j;X_k)=I(X_i;X_k)+I(X_j;X_k)-I(X_i,X_j;X_k).}
 #' Henceforth, please mind that rounding errors may occur and influence reproducibility.
+#TODO: Note, better use cmiMatrix2 if only Y is used...
 #' @examples
 #' triScores(iris)
 #' @export

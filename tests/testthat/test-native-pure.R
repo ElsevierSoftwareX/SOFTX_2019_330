@@ -1,6 +1,6 @@
 context("test-native-pure.R")
 
-data.frame(apply(iris[,-5],2,cut,10))->X
+data.frame(lapply(iris[,-5],cut,10))->X
 X$const<-factor(rep(1,150))
 X$tri<-factor(rep(1:3,50))
 Y<-iris$Species
@@ -92,6 +92,13 @@ test_that("h behaves properly",{
  )
 })
 
+test_that("jh behaves properly",{
+ expect_equal(
+  hScores(data.frame(lapply(X,joinf,Y))),
+  jhScores(X,Y)
+ )
+})
+
 test_that("jmi behaves properly",{
  Z<-factor((1:150)%%7)
  expect_equal(
@@ -107,6 +114,23 @@ test_that("jmi behaves properly",{
    miScores(X,Y)[e],
    jmiScores(X,Y,X[,e])[e]
   )
+})
+
+test_that("max jmi behaves properly",{
+ sapply(X,function(z) jmiScores(X,Y,z))->m
+ diag(m)<-0
+ expect_equal(
+  apply(m,2,max), # by col also checks symmetry
+  maxJmiScores(X,Y)
+ )
+})
+
+test_that("max cmi behaves properly",{
+ sapply(X,function(z) cmiScores(X,Y,z))->m
+ expect_equal(
+  apply(m,1,max),
+  maxCmiScores(X,Y)
+ )
 })
 
 test_that("multithread tie breaking is stable",{

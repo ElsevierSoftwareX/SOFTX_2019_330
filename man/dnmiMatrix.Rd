@@ -11,7 +11,7 @@ dnmiMatrix(X, zeroDiag = TRUE, threads = 0)
 Single vector will be interpreted as a data.frame with one column.
 \code{NA}s are not allowed.}
 
-\item{zeroDiag}{Boolean flag, whether the diagonal should be filled with zeroes or with feature entropies.}
+\item{zeroDiag}{Boolean flag, whether the diagonal should be filled with zeroes, or with degenerated scores for two identical copies of a feature.}
 
 \item{threads}{Number of threads to use; default value, 0, means all available to OpenMP.}
 }

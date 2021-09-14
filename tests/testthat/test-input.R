@@ -1,7 +1,7 @@
 context("test-input.R")
 
 test_that("Crazy decision works",{
- data.frame(A=rep(letters[1:2],each=20))->X
+ data.frame(A=factor(rep(1:2,each=20)))->X
  rep(c(TRUE,FALSE),each=20)->Y
  expect_equal(names(MIM(X,Y,1)$selection),"A")
  expect_equal(MIM(X,rep(-.7,40),1),list(selection=integer(0),score=numeric(0)))
@@ -71,13 +71,13 @@ c(
  "CMI","MIM","JMIM","NJMIM","JMI","DISR","CMIM","MRMR",
  "cmiMatrix","cmiScores","dnmiMatrix","hScores","impScores",
  "jmiMatrix","jmiScores","miMatrix","miScores","njmiMatrix",
- "njmiScores","nmiMatrix"
+ "njmiScores","nmiMatrix","maxJmiScores"
 )->algos
 for(algo in algos){
  test_that(sprintf("Named vector X work with %s",algo),{
   if(grepl("^h",algo)){
    z<-do.call(algo,list(c(a=1,b=2,c=3)))
-  }else if(grepl("(^mi|^imp|^dnmi|^nmi)",algo)){
+  }else if(grepl("(^mi|^imp|^dnmi|^nmi|^maxJmi|^maxCmi)",algo)){
    z<-do.call(algo,list(c(a=1,b=2,c=3),1:3))
   }else if(grepl("(^cmi|^jmi|^njmi)",algo)){
    z<-do.call(algo,list(c(a=1,b=2,c=3),1:3,3:1))
@@ -99,17 +99,17 @@ for(algo in algos){
 test_that("Magical cut works like R cut",{
  expect_equal(
   miScores(iris[,-5],iris$Species),
-  miScores(data.frame(apply(iris[,-5],2,cut,10)),iris$Species)
+  miScores(data.frame(lapply(iris[,-5],cut,10)),iris$Species)
  )
  ii<-iris[c(1:14,100:112),]
  expect_equal(
   miScores(ii[,-5],ii$Species),
-  miScores(data.frame(apply(ii[,-5],2,cut,9)),ii$Species)
+  miScores(data.frame(lapply(ii[,-5],cut,9)),ii$Species)
  )
  ii<-iris[c(1:3,101:103),]
  expect_equal(
   miScores(ii[,-5],ii$Species),
-  miScores(data.frame(apply(ii[,-5],2,cut,2)),ii$Species)
+  miScores(data.frame(lapply(ii[,-5],cut,2)),ii$Species)
  )
 })
 
